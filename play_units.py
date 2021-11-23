@@ -1,6 +1,5 @@
 from random import choices
 
-direct_list = [1, 1, -1, -1]
 
 
 class Cell:
@@ -8,6 +7,7 @@ class Cell:
     This class is responsible for the cell itself, her movement and attributes
     """
     init_r = 1
+    direct_list = [(0, 1), (1, 0), (0, -1), (-1, 0)]
     init_velocity = 1
 
     def __init__(self, x, y, cell_type):
@@ -34,19 +34,17 @@ class Cell:
             self.direction[0] = position[1] - self.y
             self.direction[1] = position[0] - self.x
         elif position[0] >= self.x:
-            self.direction[2] = position[1] - self.y
+            self.direction[2] = self.y - position[1]
             self.direction[1] = position[0] - self.x
         elif position[1] >= self.y:
             self.direction[0] = position[1] - self.y
-            self.direction[3] = position[0] - self.x
+            self.direction[3] = self.x - position[0]
         else:
-            self.direction[2] = position[1] - self.y
-            self.direction[3] = position[0] - self.x
-        final_direction = direct_list[self.direction.index(choices(self.direction, weights=self.direction))]
-        if final_direction / 2 == 0:
-            self.y += self.velocity * final_direction
-        else:
-            self.x += self.velocity * final_direction
+            self.direction[2] = self.y - position[1]
+            self.direction[3] = self.x - position[0]
+        final_direction = choices(self.direct_list, weights=self.direction)[0]
+        self.y += final_direction[1] * self.velocity
+        self.x += final_direction[0] * self.velocity
 
     def mutate(self, mutate_probabilities):
         pass
