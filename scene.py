@@ -1,20 +1,15 @@
-import pygame as pg
-
-def pixel_blit(screen, objects, camera_pos, screen_aspect, pixel_view_amount):
+def pixel_blit(screen, objects, camera_pos, screen_size, zoom):
     '''
     we chose color for pixels, that we want to draw (pixels in camera area)
-    and then draw them
-
-    Object coords should be given as int (pixel have 1x1 dimension)
-    Camera coords are in the same coordinate system, but can be float
     :param screen:
     :param objects: list with objects we want to draw
     :param camera_pos: coords of camera [x, y]
-    :param screen_aspect: [screen_with, screen height]
-    :param pixel_view_amount: how many pixels we want to draw [row length, column length]
+    :param screen_size: [screen_with, screen_height]
+    :param zoom: we draw pixel net with sizes (screen_with/zoom X screen_height/zoom) pixels
     '''
-    pixel_width = screen_aspect[0] / pixel_view_amount[0]
-    pixel_height = screen_aspect[1] / pixel_view_amount[1]
+    pixel_size = zoom
+    pixel_view_amount = [int(screen_size[0] / zoom) + 1, int(screen_size[1] / zoom) + 1]
+    # pixel_view_amount: how many pixels we want to draw [row length, column length]
     int_camera_coords = []
     int_camera_coords.append(int(camera_pos[0]))
     int_camera_coords.append(int(camera_pos[1]))
@@ -23,7 +18,7 @@ def pixel_blit(screen, objects, camera_pos, screen_aspect, pixel_view_amount):
         x = obj.x - int_camera_coords[0]
         y = obj.y - int_camera_coords[1]
         r = obj.r
-        if ((abs(x) <= screen_aspect[0] / 2 + r) and (abs(y) <= screen_aspect[1] / 2 + r)):
+        if ((abs(x) <= screen_size[0] / 2 + r) and (abs(y) <= screen_size[1] / 2 + r)):
             scene_objects.append(
                 [int(x + (pixel_view_amount[0]) / 2), int(y + (pixel_view_amount[1]) / 2), r, obj.color])
             # there are objects in new system of coords in this list
@@ -42,14 +37,14 @@ def pixel_blit(screen, objects, camera_pos, screen_aspect, pixel_view_amount):
     # now we draw all pixels
     dx = camera_pos[0] - int_camera_coords[0]
     dy = camera_pos[1] - int_camera_coords[1]
-    row_number = 0
+    string_number = 0
     column_number = 0
-    for row in pixels:
-        for column in row:
-            x = pg.draw.rect(screen, column,
-                             ((row_number - dx) * pixel_width,
-                              screen_aspect[1] - (column_number + 1 - dy) * pixel_height,
-                              pixel_width, pixel_height))
+    for string in pixels:
+        for column in string:
+            pg.draw.rect(screen, column,
+                         ((string_number - dx) * pixel_size, screen_size[1] - (column_number + 1 - dy) * pixel_size,
+                          pixel_size + 1, pixel_size + 1))
+            # we add +1 to pixel_size to fix empty place caused not int zoom
             column_number += 1
         column_number = 0
-        row_number += 1
+        string_number += 1
