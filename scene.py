@@ -36,15 +36,9 @@ def pixel_blit(screen, objects, camera_pos, screen_size, zoom):
     # now we draw all pixels
     dx = camera_pos[0] - int_camera_coords[0]
     dy = camera_pos[1] - int_camera_coords[1]
-    string_number = 0
-    column_number = 0
-    for string in pixels:
-        for column in string:
-            pg.draw.rect(screen, column,
-                             ((string_number - dx) * pixel_size, screen_size[1] - (column_number + 1 - dy) * pixel_size,
+    for row in range(pixel_view_amount[0]):
+        for column in range(pixel_view_amount[1]):
+            pg.draw.rect(screen, pixels[row][column],
+                             ((row - dx) * pixel_size, screen_size[1] - (column + 1 - dy) * pixel_size,
                               pixel_size + 1, pixel_size + 1))
             # we add +1 to pixel_size to fix empty place caused not int zoom
-            column_number += 1
-        column_number = 0
-        string_number += 1
-
