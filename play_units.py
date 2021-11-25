@@ -19,7 +19,8 @@ class Cell:
         self.x = x
         self.y = y
         self.type = cell_type
-        self.radius = self.init_r
+        self.color = cell_type
+        self.r = self.init_r
         self.direction = None  # will be a list of len 4 (up, right, down, left)
         self.velocity = self.init_velocity
 

@@ -1,3 +1,5 @@
+import pygame as pg
+
 def draw_background(screen, background_color, screen_size):
     '''
     draw background
