@@ -17,7 +17,7 @@ class Cell:
         """
         self.x = x
         self.y = y
-        self.type = cell_type  # this is needed for future managing
+        self.cell_type = cell_type  # this is needed for future managing
         self.color = cell_type
         self.r = self.init_r
         self.direction = None  # will be a list of len 4 (up, right, down, left)
@@ -46,6 +46,38 @@ class Cell:
         self.y += final_direction[1] * self.velocity
         self.x += final_direction[0] * self.velocity
 
+    #  Егор, пока что не реализцуй эту функцию,
+    #  там надо прописать типы у всех типов, потому что это влияет на отпределение направления
+    def evaluate_direction(self, grid: list):
+        """
+        Evaluates the most preferable direction for a cell
+        :param grid: map of objects on the playing surface
+        :return: tuple of 2 ints -- position of direction
+        """
+        position = [self.x, self.y]
+        if self.y + 10 >= len(grid):
+            rows = grid[self.y - 10:]
+        elif self.y - 10 <= 0:
+            rows = grid[:self.y + 10]
+        else:
+            rows = grid[self.y - 10:self.y + 10]
+        for row in rows:
+            if self.x + 10 >= len(row):
+                objects = grid[self.x - 10:]
+            elif self.x - 10 <= 0:
+                objects = grid[:self.y + 10]
+            else:
+                objects = grid[self.y - 10:self.y + 10]
+            for unit in objects:
+                if unit is not None:
+                    if unit.type == 'food':  # FIXME: has to be edited in order to fit the model
+                        position[0] += unit.x
+                        position[1] += unit.y
+                    elif unit.cell_type != self.type:
+                        position[0] -= unit.x
+                        position[1] -= unit.y
+        return tuple(position)
+
     def mutate(self, mutate_probabilities):
         pass
 
@@ -57,6 +89,7 @@ class FoodSource:
     """
     This class controls the position of a food source
     """
+    cell_type = 'food'
 
     def __init__(self, position: tuple):
         self.x = position[0]
@@ -74,6 +107,7 @@ class Food:
     """
     AMOUNT = 1
     RADIUS = 1
+    cell_type = 'food'
 
     def __init__(self, food_position: tuple):
         self.x, self.y = self.position = food_position
