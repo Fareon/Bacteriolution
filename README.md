@@ -1,2 +1,5 @@
 # Bacteriolution
-Bacteria evolutional game with an evolutional mechanism 
+Evolution discrete game
+
+ 
+

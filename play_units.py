@@ -1,7 +1,6 @@
 from random import choices
 
 
-
 class Cell:
     """
     This class is responsible for the cell itself, her movement and attributes
@@ -12,13 +11,13 @@ class Cell:
 
     def __init__(self, x, y, cell_type):
         """
-        :param x: horizontal position on the grid
-        :param y: vertical position on the grid
+        :param x: horizontal position on the grid.py
+        :param y: vertical position on the grid.py
         :param cell_type: type of a cell (contains color) (GREEN, for example)
         """
         self.x = x
         self.y = y
-        self.type = cell_type
+        self.type = cell_type  # this is needed for future managing
         self.color = cell_type
         self.r = self.init_r
         self.direction = None  # will be a list of len 4 (up, right, down, left)
@@ -55,6 +54,9 @@ class Cell:
 
 
 class FoodSource:
+    """
+    This class controls the position of a food source
+    """
 
     def __init__(self, position: tuple):
         self.x = position[0]
@@ -67,8 +69,11 @@ class FoodSource:
 
 
 class Food:
+    """
+    This class controls food and its position
+    """
     AMOUNT = 1
     RADIUS = 1
 
     def __init__(self, food_position: tuple):
-        self.position = food_position
+        self.x, self.y = self.position = food_position
