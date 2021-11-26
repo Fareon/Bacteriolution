@@ -24,6 +24,8 @@ class Cell:
         self.direction = None  # will be a list of len 4 (up, right, down, left)
         self.velocity = self.init_velocity
         self.vision_distance = self.init_vision_distance
+        self.energy = None  # In future will stand for hunger
+        self.life = None  # In future will stand for how ling the cell is going to live
 
     def move(self, position: tuple):
         """
@@ -31,7 +33,7 @@ class Cell:
         Counts the weight of directions accordingly and moves the cell after choosing direction.
         :param position: tuple (len = 2), with coordinates of the most preferable direction
         """
-        self.direction = [1, 1, 1, 1]  # FIXME: has to be normalized according to the coordinates
+        self.direction = [1 for _ in range(4)]  # FIXME: has to be normalized according to the coordinates
         if position[0] >= self.x and position[1] >= self.y:
             self.direction[0] = position[1] - self.y
             self.direction[1] = position[0] - self.x
@@ -82,6 +84,13 @@ class Cell:
 
     def mutate(self, mutate_probabilities):
         pass
+
+    def tick(self):
+        """
+        Makes the cell grow older and become more hungry
+        """
+        self.energy -= 1
+        self.life -= 1
 
     def grow(self):
         self.r += 1
