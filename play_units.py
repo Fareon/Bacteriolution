@@ -73,7 +73,7 @@ class Cell:
                     if unit.type == 'food':  # FIXME: has to be edited in order to fit the model
                         position[0] += unit.x
                         position[1] += unit.y
-                    elif unit.cell_type != self.type:
+                    elif unit.cell_type != self.cell_type:
                         position[0] -= unit.x
                         position[1] -= unit.y
         return tuple(position)
@@ -82,7 +82,7 @@ class Cell:
         pass
 
     def grow(self):
-        self.radius += 1
+        self.r += 1
 
 
 class FoodSource:
