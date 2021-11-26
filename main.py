@@ -1,10 +1,10 @@
 import pygame as pg
-import thorpy
+#import thorpy
 import time
 import numpy as np
 from color import color
 import scene
-from game_manager import manager as gm
+import game_manager as gm
 import game_core as gc
 
 # import map          RENAME MODULE map.py
@@ -53,9 +53,9 @@ def main():
         if keys_pressed[pg.K_DOWN] or keys_pressed[pg.K_s]:
             gm.move_camera(gm, (0, -1))
 
-        if (gm.frame % (gm.FPS // gm.Game_FPS) == 0):
+        if gm.frame % (gm.FPS // gm.Game_FPS) == 0:
             for cell in gc.cells:
-                if (gm.clickpos != None):
+                if gm.clickpos is not None:
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
                     cell.move(move_to)
         scene.scene_display(screen, gc.cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom, color.WHITE)
