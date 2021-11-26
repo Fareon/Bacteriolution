@@ -11,8 +11,8 @@ class Cell:
 
     def __init__(self, x, y, cell_type):
         """
-        :param x: horizontal position on the grid
-        :param y: vertical position on the grid
+        :param x: horizontal position on the grid.py
+        :param y: vertical position on the grid.py
         :param cell_type: type of a cell (contains color) (GREEN, for example)
         """
         self.x = x
