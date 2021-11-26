@@ -8,6 +8,7 @@ class Cell:
     init_r = 1
     direct_list = [(0, 1), (1, 0), (0, -1), (-1, 0)]
     init_velocity = 1
+    init_vision_distance = 10
 
     def __init__(self, x, y, cell_type):
         """
@@ -22,6 +23,7 @@ class Cell:
         self.r = self.init_r
         self.direction = None  # will be a list of len 4 (up, right, down, left)
         self.velocity = self.init_velocity
+        self.vision_distance = self.init_vision_distance
 
     def move(self, position: tuple):
         """
@@ -55,27 +57,27 @@ class Cell:
         :return: tuple of 2 ints -- position of direction
         """
         position = [self.x, self.y]
-        if self.y + 10 >= len(grid):
-            rows = grid[self.y - 10:]
-        elif self.y - 10 <= 0:
-            rows = grid[:self.y + 10]
+        if self.y + self.vision_distance >= len(grid):
+            rows = grid[self.y - self.vision_distance:]
+        elif self.y - self.vision_distance <= 0:
+            rows = grid[:self.y + self.vision_distance]
         else:
-            rows = grid[self.y - 10:self.y + 10]
+            rows = grid[self.y - self.vision_distance:self.y + self.vision_distance]
         for row in rows:
-            if self.x + 10 >= len(row):
-                objects = grid[self.x - 10:]
-            elif self.x - 10 <= 0:
-                objects = grid[:self.y + 10]
+            if self.x + self.vision_distance >= len(row):
+                objects = grid[self.x - self.vision_distance:]
+            elif self.x - self.vision_distance <= 0:
+                objects = grid[:self.y + self.vision_distance]
             else:
-                objects = grid[self.y - 10:self.y + 10]
+                objects = grid[self.y - self.vision_distance:self.y + self.vision_distance]
             for unit in objects:
                 if unit is not None:
                     if unit.type == 'food':  # FIXME: has to be edited in order to fit the model
-                        position[0] += unit.x
-                        position[1] += unit.y
+                        position[0] += unit.x - self.x
+                        position[1] += unit.y - self.y
                     elif unit.cell_type != self.cell_type:
-                        position[0] -= unit.x
-                        position[1] -= unit.y
+                        position[0] -= unit.x - self.x
+                        position[1] -= unit.y - self.y
         return tuple(position)
 
     def mutate(self, mutate_probabilities):
