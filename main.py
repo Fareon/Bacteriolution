@@ -54,6 +54,9 @@ def main():
             gm.move_camera(gm, (0, -1))
 
         if (gm.frame % (gm.FPS // gm.Game_FPS) == 0):
+            for fs in gc.food_sources:
+                fs.gen_food()
+
             for cell in gc.cells:
                 if (gm.clickpos != None):
                     move_to = gm.ScreenToScene(gm, gm.clickpos)

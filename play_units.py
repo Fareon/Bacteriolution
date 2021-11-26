@@ -1,4 +1,7 @@
 from random import choices
+from random import randrange
+import game_core as gc
+import numpy as np
 
 
 class Cell:
@@ -62,7 +65,11 @@ class FoodSource:
         self.x = position[0]
         self.y = position[1]
 
-    # def gen_food(self, food_position):
+    def gen_food(self, range):
+        gen_pos = np.array([randrange(self.x - range, self.x + range), randrange(self.y - range, self.y + range)])
+        #gc.game_objects.append(Food(gen_pos))
+        #append to food grid
+
     # food_unit = Food(food_position)
     # return food_unit
     # пока что не нужный метод, может быть удален
