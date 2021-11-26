@@ -1,8 +1,13 @@
-import random
+from random import random
+
 
 class color:
+
     def random():
-        rand_color = (int(256*random.random()), int(256*random.random()), int(256*random.random()) )
+        """
+        :return: random color
+        """
+        rand_color = (int(256*random.random()), int(256*random.random()), int(256*random.random()))
         return rand_color
     
     RED = (255, 0, 0)
