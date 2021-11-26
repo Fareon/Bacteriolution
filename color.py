@@ -1,3 +1,6 @@
+import random
+
+
 class color:
 
     def random():
