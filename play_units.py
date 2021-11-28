@@ -122,3 +122,4 @@ class Food:
 
     def __init__(self, food_position: tuple):
         self.x, self.y = self.position = food_position
+        self.r = self.RADIUS
