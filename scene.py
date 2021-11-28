@@ -35,6 +35,7 @@ def scene_objects_display(screen, pixel_size, scene_objects):
     '''
     draw scene_objects
     :param screen:
+    :param pixel_size: size of net in our coords system
     :param scene_objects: # list of objects, located in camera area
     '''
     for obj in scene_objects:
@@ -46,20 +47,29 @@ def scene_objects_display(screen, pixel_size, scene_objects):
                      ((x - r) * pixel_size, (y - r) * pixel_size, 2 * r * pixel_size, 2 * r * pixel_size))
 
 
-def scene_display(screen, objects, camera_pos, screen_size, zoom, background_color):
+def scene_display(screen, camera_pos, screen_size, zoom, background_color):
     '''
-    main function that display scene
+    function that display scene (without objects)
     :param screen:
-    :param objects: list with objects we want to draw (need obj.r .x .y .color)
     :param camera_pos: coords of camera [x, y]
     :param screen_size: [screen_with, screen_height]
     :param zoom: How much bigger should be our pixel (element of our pixel set), then screen pixel
     :param background_color:
     '''
+    draw_background(screen, background_color, screen_size)
+
+def draw_cells(screen, objects, camera_pos, screen_size, zoom):
+    '''
+    function that display cells
+    :param screen:
+    :param objects: list with objects we want to draw (need obj.r .x .y .color)
+    :param camera_pos: coords of camera [x, y]
+    :param screen_size: [screen_with, screen_height]
+    :param zoom: How much bigger should be our pixel (element of our pixel set), then screen pixel
+    '''
     dx = camera_pos[0] - int(camera_pos[0])  # offset of pixel net, related not int coords of camera
     dy = camera_pos[1] - int(camera_pos[1])
     pixel_size = zoom
     pixel_view_amount = [int(screen_size[0] / zoom) + 1, int(screen_size[1] / zoom) + 1]
-    scene_objects = choose_objects_for_drawing(objects, camera_pos, pixel_view_amount)
-    draw_background(screen, background_color, screen_size)
-    scene_objects_display(screen, pixel_size, scene_objects)
+    scene_cells = choose_objects_for_drawing(objects, camera_pos, pixel_view_amount)
+    scene_objects_display(screen, pixel_size, scene_cells)
