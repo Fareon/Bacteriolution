@@ -59,7 +59,7 @@ def main():
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
                     cell.move(move_to)
         scene.scene_display(screen, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom, color.WHITE)
-        scene.draw_cells(screen, gc.cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom)
+        scene.draw_sqare_objects(screen, gc.cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #drawing cells
 
 
         pg.display.update()
