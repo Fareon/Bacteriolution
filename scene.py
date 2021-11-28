@@ -1,5 +1,6 @@
 import pygame as pg
 
+
 def draw_background(screen, background_color, screen_size):
     '''
     draw background
@@ -9,6 +10,42 @@ def draw_background(screen, background_color, screen_size):
     '''
     pg.draw.rect(screen, background_color,
                  (0, 0, screen_size[0], screen_size[1]))
+
+
+def draw_borders(screen, screen_size, zoom, gamefield_size, borders_color, borders_width, camera_pos):
+    '''
+    function that draw borders
+    :param screen:
+    :param screen_size:  [screen_with, screen_height]
+    :param zoom: how much bigger should be our pixel (element of our pixel set), then screen pixel
+    :param gamefield_size: [gamefield_with, gamefield_height]
+    :param borders_color:
+    :param borders_width: int. with of border in pixels
+    :param camera_pos: coords of camera [x, y]
+    '''
+    if zoom < 1: # if zoom < 1 border can't be drawn
+        zoom =1
+    pixel_size = zoom
+    pixel_view_amount = [int(screen_size[0] / zoom) + 1, int(screen_size[1] / zoom) + 1]
+    # coords of up left frame-border corner in new system of coords
+    x0 = -camera_pos[0] + int((pixel_view_amount[0]) / 2) - borders_width
+    y0 = -camera_pos[1] + int((pixel_view_amount[1]) / 2) - borders_width
+    # draw up border
+    pg.draw.rect(screen, borders_color,
+                 (x0 * pixel_size, y0 * pixel_size,
+                  (gamefield_size[0] + 2 * borders_width) * pixel_size, borders_width * pixel_size))
+    # draw left border
+    pg.draw.rect(screen, borders_color,
+                 (x0 * pixel_size, y0 * pixel_size,
+                  borders_width * pixel_size, (gamefield_size[1] + 2 * borders_width) * pixel_size))
+    # draw down border
+    pg.draw.rect(screen, borders_color,
+                 (x0 * pixel_size, (y0 + gamefield_size[1] + borders_width) * pixel_size,
+                  (gamefield_size[0] + 2 * borders_width) * pixel_size, borders_width * pixel_size))
+    # draw right border
+    pg.draw.rect(screen, borders_color,
+                 ((x0 + gamefield_size[0] + borders_width) * pixel_size, y0 * pixel_size,
+                  borders_width * pixel_size, (gamefield_size[1] + 2 * borders_width) * pixel_size))
 
 
 def choose_objects_for_drawing(objects, camera_pos, pixel_view_amount):
@@ -65,7 +102,7 @@ def cross_objects_display(screen, pixel_size, scene_objects):
                      ((x - r) * pixel_size, (y - r / 2) * pixel_size, 2 * r * pixel_size, r * pixel_size))
 
 
-def scene_display(screen, camera_pos, screen_size, zoom, background_color):
+def scene_display(screen, camera_pos, screen_size, background_color):
     '''
     function that display scene (without objects)
     :param screen:
