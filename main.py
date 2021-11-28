@@ -58,7 +58,9 @@ def main():
                 if gm.clickpos is not None:
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
                     cell.move(move_to)
-        scene.scene_display(screen, gc.cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom, color.WHITE)
+        scene.scene_display(screen, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom, color.WHITE)
+        scene.draw_cells(screen, gc.cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom)
+
 
         pg.display.update()
         time.sleep(1.0 / gm.Game_FPS)
