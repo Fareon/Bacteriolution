@@ -99,7 +99,9 @@ class Cell:
         """
         heading_position = [list_of_foodsources[0].x, list_of_foodsources[0].y]
         for _ in range(1, len(list_of_foodsources)):
-            if max(abs(list_of_foodsources[_].x - heading_position[0]), abs(list_of_foodsources[_].y - heading_position[1]):
+            init_distance = (self.x - heading_position[0]) ** 2 + (self.y - heading_position[1]) ** 2
+            distance = (self.x - list_of_foodsources[_].x) ** 2 + (self.y - list_of_foodsources[_].y) ** 2
+            if distance < init_distance:
                 heading_position = [list_of_foodsources[_].x, list_of_foodsources[_].y]
         return heading_position
 
