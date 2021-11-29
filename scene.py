@@ -1,15 +1,13 @@
 import pygame as pg
 
 
-def draw_background(screen, background_color, screen_size):
+def draw_background(screen, background_color):
     '''
     draw background
     :param screen:
     :param background_color:
-    :param screen_size: screen_size = [width, height]
     '''
-    pg.draw.rect(screen, background_color,
-                 (0, 0, screen_size[0], screen_size[1]))
+    screen.fill(background_color)
 
 
 def draw_borders(screen, screen_size, zoom, gamefield_size, borders_color, borders_width, camera_pos):
@@ -111,7 +109,7 @@ def scene_display(screen, camera_pos, screen_size, background_color):
     :param zoom: How much bigger should be our pixel (element of our pixel set), then screen pixel
     :param background_color:
     '''
-    draw_background(screen, background_color, screen_size)
+    draw_background(screen, background_color)
 
 
 def draw_sqare_objects(screen, objects, camera_pos, screen_size, zoom):
