@@ -21,8 +21,8 @@ def draw_borders(screen, screen_size, zoom, gamefield_size, borders_color, borde
     :param borders_width: int. with of border in pixels
     :param camera_pos: coords of camera [x, y]
     '''
-    if zoom < 1: # if zoom < 1 border can't be drawn
-        zoom =1
+    if zoom < 1:  # if zoom < 1 border can't be drawn
+        zoom = 1
     pixel_size = zoom
     pixel_view_amount = [int(screen_size[0] / zoom) + 1, int(screen_size[1] / zoom) + 1]
     # coords of up left frame-border corner in new system of coords
@@ -98,18 +98,6 @@ def cross_objects_display(screen, pixel_size, scene_objects):
                      ((x - r / 2) * pixel_size, (y - r) * pixel_size, r * pixel_size, 2 * r * pixel_size))
         pg.draw.rect(screen, color,
                      ((x - r) * pixel_size, (y - r / 2) * pixel_size, 2 * r * pixel_size, r * pixel_size))
-
-
-def scene_display(screen, camera_pos, screen_size, background_color):
-    '''
-    function that display scene (without objects)
-    :param screen:
-    :param camera_pos: coords of camera [x, y]
-    :param screen_size: [screen_with, screen_height]
-    :param zoom: How much bigger should be our pixel (element of our pixel set), then screen pixel
-    :param background_color:
-    '''
-    draw_background(screen, background_color)
 
 
 def draw_sqare_objects(screen, objects, camera_pos, screen_size, zoom):
