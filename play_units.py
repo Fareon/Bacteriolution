@@ -83,7 +83,7 @@ class Cell:
                         heading_position[0] -= unit.x - self.x
                         heading_position[1] -= unit.y - self.y
         if heading_position == [self.x, self.y]:
-            heading_position = evaluate_foodsource(list_of_foodsources)
+            heading_position = self.evaluate_foodsource(list_of_foodsources)
         for _ in range(2):
             if heading_position[_] < 0:
                 heading_position[_] = 0
