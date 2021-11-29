@@ -52,13 +52,15 @@ class Cell:
 
     #  Егор, пока что не реализцуй эту функцию,
     #  там надо прописать типы у всех типов, потому что это влияет на отпределение направления
-    def evaluate_direction(self, grid: list):
+    def evaluate_direction(self, grid: list, list_of_foodsources: list):
         """
         Evaluates the most preferable direction for a cell
+        :param list_of_foodsources: list of all foodsources on the map (objects). the cell decides to which one to go.
         :param grid: map of objects on the playing surface
         :return: tuple of 2 ints -- position of direction
         """
-        position = [self.x, self.y]
+        food_koef = 1
+        heading_position = [self.x, self.y]
         if self.y + self.vision_distance >= len(grid):
             rows = grid[self.y - self.vision_distance:]
         elif self.y - self.vision_distance <= 0:
@@ -75,12 +77,31 @@ class Cell:
             for unit in objects:
                 if unit is not None:
                     if unit.type == 'food':  # FIXME: has to be edited in order to fit the model
-                        position[0] += unit.x - self.x
-                        position[1] += unit.y - self.y
+                        heading_position[0] += (unit.x - self.x) * food_koef
+                        heading_position[1] += (unit.y - self.y) * food_koef
                     elif unit.cell_type != self.cell_type:
-                        position[0] -= unit.x - self.x
-                        position[1] -= unit.y - self.y
-        return tuple(position)
+                        heading_position[0] -= unit.x - self.x
+                        heading_position[1] -= unit.y - self.y
+        if heading_position == [self.x, self.y]:
+            heading_position = evaluate_foodsource(list_of_foodsources)
+        for _ in range(2):
+            if heading_position[_] < 0:
+                heading_position[_] = 0
+            elif heading_position[_] > len(grid):
+                heading_position[_] = len(grid)
+        return tuple(heading_position)
+
+    def evaluate_foodsource(self, list_of_foodsources: list):
+        """
+        this function stands for the cell decision to move to a fodsource if no enemies are present
+        :param list_of_foodsources: list of all foodsources on the map (objects). the cell decides to which one to go
+        :return: heading position (list)
+        """
+        heading_position = [list_of_foodsources[0].x, list_of_foodsources[0].y]
+        for _ in range(1, len(list_of_foodsources)):
+            if max(abs(list_of_foodsources[_].x - heading_position[0]), abs(list_of_foodsources[_].y - heading_position[1]):
+                heading_position = [list_of_foodsources[_].x, list_of_foodsources[_].y]
+        return heading_position
 
     def mutate(self, mutate_probabilities):
         pass
@@ -105,6 +126,7 @@ class FoodSource:
     def __init__(self, position: tuple):
         self.x = position[0]
         self.y = position[1]
+        self.r = 10
 
     # def gen_food(self, food_position):
     # food_unit = Food(food_position)
