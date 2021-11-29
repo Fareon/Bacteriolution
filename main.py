@@ -59,7 +59,18 @@ def main():
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
                     cell.move(move_to)
         scene.draw_background(screen, color.WHITE)
-        scene.draw_sqare_objects(screen, gc.cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #drawing cells
+        scene.draw_sqare_objects(screen, gc.cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #draw cells
+        # еду рисуем при помощи той же функции, что и клетки
+
+        # источники еды рисуем с помощью функции draw_cross_objects(), входные данные такие же как у draw_sqare_objects()
+        # только отрисовывается крест, вписанный в соответствующий квадрат
+
+        # отрисовка границ:
+        # draw_borders(screen, [gm.screen_width, gm.screen_height], gm.zoom,
+        # gamefield_size, borders_color, borders_width, gm.camera_pos)
+
+        # gamefield_size = [gamefield_width, gamefield_height] - размеры игрового поля, где может находиться клетка
+        # borders_width - толщина границы в наших пикселях
 
 
         pg.display.update()
