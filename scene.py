@@ -27,7 +27,7 @@ def draw_borders(screen, screen_size, zoom, gamefield_size, borders_color, borde
     pixel_view_amount = [int(screen_size[0] / zoom) + 1, int(screen_size[1] / zoom) + 1]
     # coords of up left frame-border corner in new system of coords
     x0 = -camera_pos[0] + int((pixel_view_amount[0]) / 2) - borders_width
-    y0 = -camera_pos[1] + int((pixel_view_amount[1]) / 2) - borders_width
+    y0 = (-1) * (-camera_pos[1] + int((pixel_view_amount[1]) / 2) - borders_width)
     # draw up border
     pg.draw.rect(screen, borders_color,
                  (x0 * pixel_size, y0 * pixel_size,
