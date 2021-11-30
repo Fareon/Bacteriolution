@@ -38,4 +38,4 @@ def eat_food(cell):
     all_food = check_for_food((x, y), cell.r)
     for food in all_food:
         grid[food.x][food.y].remove(food)
-        cell.grow()
+        cell.eat()

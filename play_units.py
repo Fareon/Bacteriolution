@@ -32,6 +32,7 @@ class Cell:
         self.vision_distance = self.init_vision_distance
         self.energy = None  # In future will stand for hunger
         self.life = None  # In future will stand for how ling the cell is going to live
+        self.food_level = 1
 
     def move(self, position: tuple):
         """
@@ -127,7 +128,15 @@ class Cell:
         self.life -= 1
 
     def grow(self):
+        self.food_level = 1
         self.r += 1
+
+    def eat(self):
+        if self.food_level <= self.r ** 2:
+            self.food_level += 1
+        else:
+            self.grow()
+
 
 
 class FoodSource:
