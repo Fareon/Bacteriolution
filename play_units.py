@@ -14,6 +14,7 @@ class Cell:
     direct_list = [(0, 1), (1, 0), (0, -1), (-1, 0)]
     init_velocity = 1
     init_vision_distance = 10
+    game_object = 'food_gen'
 
     def __init__(self, x, y, cell_type):
         """
@@ -52,8 +53,13 @@ class Cell:
             self.direction[2] = self.y - position[1]
             self.direction[3] = self.x - position[0]
         final_direction = choices(self.direct_list, weights=self.direction)[0]
+
+        gc.grid[self.x][self.y].remove(self)
+
         self.y += final_direction[1] * self.velocity
         self.x += final_direction[0] * self.velocity
+        gc.grid[self.x][self.y].append(self)
+
 
     #  Егор, пока что не реализцуй эту функцию,
     #  там надо прописать типы у всех типов, потому что это влияет на отпределение направления
@@ -129,7 +135,7 @@ class FoodSource:
     This class controls the position of a food source
     """
     cell_type = 'food'
-
+    game_object = 'food_gen'
 
     def __init__(self, position: tuple):
         self.x = position[0]
@@ -148,7 +154,7 @@ class FoodSource:
 
         new_food = Food((x_born, y_born))
         gc.food.append(new_food)
-        gc.grid[x_born][y_born] = new_food
+        gc.grid[x_born][y_born].append(new_food)
 
 
 class Food:
@@ -158,6 +164,7 @@ class Food:
     AMOUNT = 1
     RADIUS = 1
     cell_type = 'food'
+    game_object = 'food'
 
     def __init__(self, food_position: tuple):
         self.x, self.y = self.position = food_position

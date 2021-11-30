@@ -71,9 +71,10 @@ def main():
                 if gm.clickpos is not None:
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
                     cell.move(move_to)
+                    gc.eat_food(cell)
 
             for food_gen in gc.food_generators:
-                if(f.chance(food_gen.rate)):
+                if f.chance(food_gen.rate):
                     food_gen.gen_food()
 
         # GRAPHICS
