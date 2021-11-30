@@ -35,13 +35,17 @@ def main():
     pg.init()
 
     screen = pg.display.set_mode((gm.screen_width, gm.screen_height))
+    #gc.initialize_map(gc)
+
     for i in range(10):
-        gc.born_cell([gm.scene_width * np.random.rand(), gm.scene_height * np.random.rand()], color.random())
+        x_born = int(gm.scene_width * np.random.rand())
+        y_born = int(gm.scene_height * np.random.rand())
+        gc.born_cell([x_born, y_born], color.random())
 
     while alive:
-        # pg.key.set_repeat(10, 10)
         handle_events(pg.event.get())
 
+        #DETECT INPUT
         keys_pressed = pg.key.get_pressed()
 
         if keys_pressed[pg.K_LEFT] or keys_pressed[pg.K_a]:
@@ -53,13 +57,18 @@ def main():
         if keys_pressed[pg.K_DOWN] or keys_pressed[pg.K_s]:
             gm.move_camera(gm, (0, -1))
 
+        # CALCULATE NEW POS
         if gm.frame % (gm.FPS // gm.Game_FPS) == 0:
             for cell in gc.cells:
                 if gm.clickpos is not None:
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
                     cell.move(move_to)
+
+        # GRAPHICS
         scene.draw_background(screen, color.WHITE)
         scene.draw_sqare_objects(screen, gc.cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #draw cells
+        scene.draw_borders(screen, [gm.screen_width, gm.screen_height], gm.zoom,
+                     [gm.scene_width, gm.scene_height], color.random(), 2, gm.camera_pos)
         # еду рисуем при помощи той же функции, что и клетки
 
         # источники еды рисуем с помощью функции draw_cross_objects(), входные данные такие же как у draw_sqare_objects()

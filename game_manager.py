@@ -14,8 +14,8 @@ clickpos = None
 zoom = 10
 screen_width = 1280
 screen_height = 650
-scene_width = screen_width/zoom
-scene_height = screen_height/zoom
+scene_width = screen_width//zoom
+scene_height = screen_height//zoom
 
 FPS = 200
 Game_FPS = 60
