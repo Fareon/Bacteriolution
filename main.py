@@ -6,6 +6,8 @@ from color import color
 import scene
 import game_manager as gm
 import game_core as gc
+from random import randint
+import tricky_functions as f
 
 # import map          RENAME MODULE map.py
 
@@ -35,11 +37,16 @@ def main():
     pg.init()
 
     screen = pg.display.set_mode((gm.screen_width, gm.screen_height))
-    #gc.initialize_map(gc)
+    borders_width = 2 #map visual borders
 
     for i in range(10):
-        x_born = int(gm.scene_width * np.random.rand())
-        y_born = int(gm.scene_height * np.random.rand())
+        x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
+        y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
+        gc.born_food_gen((x_born, y_born))
+
+    for i in range(10):
+        x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
+        y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_cell([x_born, y_born], color.random())
 
     while alive:
@@ -59,16 +66,26 @@ def main():
 
         # CALCULATE NEW POS
         if gm.frame % (gm.FPS // gm.Game_FPS) == 0:
+            #any gamecore events happen here
             for cell in gc.cells:
                 if gm.clickpos is not None:
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
                     cell.move(move_to)
 
+            for food_gen in gc.food_generators:
+                if(f.chance(food_gen.rate)):
+                    food_gen.gen_food()
+
         # GRAPHICS
         scene.draw_background(screen, color.WHITE)
+
+        scene.draw_sqare_objects(screen, gc.food, gm.camera_pos, [gm.screen_width, gm.screen_height],
+                                 gm.zoom)  # draw food
         scene.draw_sqare_objects(screen, gc.cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #draw cells
         scene.draw_borders(screen, [gm.screen_width, gm.screen_height], gm.zoom,
-                     [gm.scene_width, gm.scene_height], color.random(), 2, gm.camera_pos)
+                     [gm.scene_width, gm.scene_height], color.random(), borders_width, gm.camera_pos)
+        scene.draw_cross_objects(screen, gc.food_generators, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #draw foodgens
+
         # еду рисуем при помощи той же функции, что и клетки
 
         # источники еды рисуем с помощью функции draw_cross_objects(), входные данные такие же как у draw_sqare_objects()

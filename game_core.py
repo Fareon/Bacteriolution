@@ -5,6 +5,7 @@ import game_manager as gm
 #INITIAL SHIT
 cells = []
 food_generators = []
+food = []
 grid = [[None for _ in range(gm.scene_height)] for __ in range(gm.scene_width)]
 
 def born_cell(pos, color):

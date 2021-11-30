@@ -1,11 +1,16 @@
 from random import choices
+from random import randint
+import game_core as gc
+import game_manager as gm
+from color import color
+import tricky_functions as f
 
 
 class Cell:
     """
     This class is responsible for the cell itself, her movement and attributes
     """
-    init_r = 1
+    init_r = 2
     direct_list = [(0, 1), (1, 0), (0, -1), (-1, 0)]
     init_velocity = 1
     init_vision_distance = 10
@@ -125,15 +130,25 @@ class FoodSource:
     """
     cell_type = 'food'
 
+
     def __init__(self, position: tuple):
         self.x = position[0]
         self.y = position[1]
-        self.r = 10
+        self.r = 2
+        self.range = 15
+        self.rate = 0.1      #chance to generate food current frame
+        self.color = color.GREEN
 
-    # def gen_food(self, food_position):
-    # food_unit = Food(food_position)
-    # return food_unit
-    # пока что не нужный метод, может быть удален
+    def gen_food(self):
+        x_born = self.x + (-1)**(randint(1,2)) * randint(2, self.range)
+        y_born = self.y + (-1) ** (randint(1, 2)) * randint(2, self.range)
+
+        x_born = f.clamp(x_born, 2, gm.scene_width - 3)
+        y_born = f.clamp(y_born, 2, gm.scene_height - 3)
+
+        new_food = Food((x_born, y_born))
+        gc.food.append(new_food)
+        gc.grid[x_born][y_born] = new_food
 
 
 class Food:
@@ -147,3 +162,4 @@ class Food:
     def __init__(self, food_position: tuple):
         self.x, self.y = self.position = food_position
         self.r = self.RADIUS
+        self.color = color.BLUE

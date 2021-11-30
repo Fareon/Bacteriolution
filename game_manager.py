@@ -11,7 +11,7 @@ def move_camera(self, direction):
 
 clickpos = None
 
-zoom = 10
+zoom = 4
 screen_width = 1280
 screen_height = 650
 scene_width = screen_width//zoom
