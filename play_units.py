@@ -4,6 +4,7 @@ import game_core as gc
 import game_manager as gm
 from color import color
 import tricky_functions as f
+from numpy import exp
 
 
 class Cell:
@@ -59,6 +60,7 @@ class Cell:
 
         self.y += final_direction[1] * self.velocity
         self.x += final_direction[0] * self.velocity
+
         gc.grid[self.x][self.y].append(self)
 
 
@@ -94,8 +96,8 @@ class Cell:
                             heading_position[0] += (unit.x - self.x) * food_koef
                             heading_position[1] += (unit.y - self.y) * food_koef
                         elif unit.cell_type != self.cell_type:
-                            heading_position[0] -= unit.x - self.x
-                            heading_position[1] -= unit.y - self.y
+                            heading_position[0] -= int(30 / (1 + exp(-(unit.x - self.x) + 5)))
+                            heading_position[1] -= int(30 / (1 + exp(-(unit.y - self.y) + 5)))
         if heading_position == [self.x, self.y]:
             heading_position = self.evaluate_foodsource(list_of_foodsources)
         for _ in range(2):
@@ -145,7 +147,7 @@ class FoodSource:
     """
     This class controls the position of a food source
     """
-    cell_type = 'food'
+    cell_type = 'food_gen'
     game_object = 'food_gen'
 
     def __init__(self, position: tuple):
