@@ -70,7 +70,7 @@ def main():
             for cell in gc.cells:
                 if gm.clickpos is not None:
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
-                    cell.move(move_to)
+                    cell.move(cell.evaluate_direction(gc.grid, gc.food_generators))
                     gc.eat_food(cell)
 
             for food_gen in gc.food_generators:

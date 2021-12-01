@@ -86,14 +86,16 @@ class Cell:
                 objects = grid[:self.y + self.vision_distance]
             else:
                 objects = grid[self.y - self.vision_distance:self.y + self.vision_distance]
-            for unit in objects:
-                if unit is not None:
-                    if unit.type == 'food':  # FIXME: has to be edited in order to fit the model
-                        heading_position[0] += (unit.x - self.x) * food_koef
-                        heading_position[1] += (unit.y - self.y) * food_koef
-                    elif unit.cell_type != self.cell_type:
-                        heading_position[0] -= unit.x - self.x
-                        heading_position[1] -= unit.y - self.y
+            for dot in objects:
+                for unit in dot:
+                    if unit:
+                        unit = unit[0]
+                        if unit.cell_type == 'food':  # FIXME: has to be edited in order to fit the model
+                            heading_position[0] += (unit.x - self.x) * food_koef
+                            heading_position[1] += (unit.y - self.y) * food_koef
+                        elif unit.cell_type != self.cell_type:
+                            heading_position[0] -= unit.x - self.x
+                            heading_position[1] -= unit.y - self.y
         if heading_position == [self.x, self.y]:
             heading_position = self.evaluate_foodsource(list_of_foodsources)
         for _ in range(2):
