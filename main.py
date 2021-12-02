@@ -49,6 +49,10 @@ def main():
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_cell([x_born, y_born], color.random())
 
+    x_born = randint(3 * borders_width, gm.scene_width - 3 * borders_width)
+    y_born = randint(3 * borders_width, gm.scene_height - 3 * borders_width)
+    gc.born_self_cell([x_born, y_born], color.random())
+
     while alive:
         handle_events(pg.event.get())
 
@@ -67,9 +71,13 @@ def main():
         # CALCULATE NEW POS
         if gm.frame % (gm.FPS // gm.Game_FPS) == 0:
             #any gamecore events happen here
-            for cell in gc.cells:
+            for cell in gc.self_cells:
                 if gm.clickpos is not None:
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
+                    cell.move(move_to)
+                    gc.eat_food(cell)
+            for cell in gc.cells:
+                if gm.clickpos is not None:
                     cell.move(cell.evaluate_direction(gc.grid, gc.food_generators))
                     gc.eat_food(cell)
 
@@ -82,7 +90,7 @@ def main():
 
         scene.draw_sqare_objects(screen, gc.food, gm.camera_pos, [gm.screen_width, gm.screen_height],
                                  gm.zoom)  # draw food
-        scene.draw_sqare_objects(screen, gc.cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #draw cells
+        scene.draw_sqare_objects(screen, gc.cells+gc.self_cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #draw cells
         scene.draw_borders(screen, [gm.screen_width, gm.screen_height], gm.zoom,
                      [gm.scene_width, gm.scene_height], color.random(), borders_width, gm.camera_pos)
         scene.draw_cross_objects(screen, gc.food_generators, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #draw foodgens

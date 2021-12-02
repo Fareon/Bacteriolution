@@ -34,7 +34,7 @@ b)
 
 Разобраться с модулем grid.py (**ДАНЯ И ЕГОР**) done
 
-Создание клеток AI (**ДАНЯ И ЕГОР**) half-done, need many enhancements
+Создание клеток AI (**ДАНЯ И ЕГОР**) half-done, need many enhancements (**ДАНЯ**)
 
 Продумать еду и поедание ее клетками (**ЕГОР И ДАНЯ**) done, but fixes needed
 
