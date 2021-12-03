@@ -21,29 +21,30 @@ def draw_borders(screen, screen_size, zoom, gamefield_size, borders_color, borde
     :param borders_width: int. with of border in pixels
     :param camera_pos: coords of camera [x, y]
     '''
-    if zoom < 1:  # if zoom < 1 border can't be drawn
-        zoom = 1
     pixel_size = zoom
     pixel_view_amount = [int(screen_size[0] / zoom) + 1, int(screen_size[1] / zoom) + 1]
     # coords of up left frame-border corner in new system of coords
     x0 = -camera_pos[0] + int((pixel_view_amount[0]) / 2) - borders_width
-    y0 = (-1) * (-camera_pos[1] + int((pixel_view_amount[1]) / 2) - borders_width)
+    y0 = camera_pos[1] + int((pixel_view_amount[1]) / 2) - borders_width - gamefield_size[1]
+    borders_width_in_real_pixels = borders_width * pixel_size
+    if(borders_width_in_real_pixels < 1):
+        borders_width_in_real_pixels = 1
     # draw up border
     pg.draw.rect(screen, borders_color,
                  (x0 * pixel_size, y0 * pixel_size,
-                  (gamefield_size[0] + 2 * borders_width) * pixel_size, borders_width * pixel_size))
+                  (gamefield_size[0] + borders_width) * pixel_size, borders_width_in_real_pixels))
     # draw left border
     pg.draw.rect(screen, borders_color,
-                 (x0 * pixel_size, y0 * pixel_size,
-                  borders_width * pixel_size, (gamefield_size[1] + 2 * borders_width) * pixel_size))
+                 ((x0) * pixel_size, y0 * pixel_size,
+                  borders_width_in_real_pixels, (gamefield_size[1] + 2 * borders_width) * pixel_size))
     # draw down border
     pg.draw.rect(screen, borders_color,
-                 (x0 * pixel_size, (y0 + gamefield_size[1] + borders_width) * pixel_size,
-                  (gamefield_size[0] + 2 * borders_width) * pixel_size, borders_width * pixel_size))
+                 (x0 * pixel_size, (y0 + gamefield_size[1] + 2 * borders_width) * pixel_size,
+                  (gamefield_size[0] + 2 * borders_width) * pixel_size, borders_width_in_real_pixels))
     # draw right border
     pg.draw.rect(screen, borders_color,
                  ((x0 + gamefield_size[0] + borders_width) * pixel_size, y0 * pixel_size,
-                  borders_width * pixel_size, (gamefield_size[1] + 2 * borders_width) * pixel_size))
+                  borders_width_in_real_pixels, (gamefield_size[1] + 2 * borders_width) * pixel_size))
 
 
 def choose_objects_for_drawing(objects, camera_pos, pixel_view_amount):
