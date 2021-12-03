@@ -32,14 +32,14 @@ def draw_borders(screen, screen_size, zoom, gamefield_size, borders_color, borde
     # draw up border
     pg.draw.rect(screen, borders_color,
                  (x0 * pixel_size, y0 * pixel_size,
-                  (gamefield_size[0] + borders_width) * pixel_size, borders_width_in_real_pixels))
+                  (gamefield_size[0] + 2 * borders_width) * pixel_size, borders_width_in_real_pixels))
     # draw left border
     pg.draw.rect(screen, borders_color,
                  ((x0) * pixel_size, y0 * pixel_size,
                   borders_width_in_real_pixels, (gamefield_size[1] + 2 * borders_width) * pixel_size))
     # draw down border
     pg.draw.rect(screen, borders_color,
-                 (x0 * pixel_size, (y0 + gamefield_size[1] + 2 * borders_width) * pixel_size,
+                 (x0 * pixel_size, (y0 + gamefield_size[1] + 1 * borders_width) * pixel_size,
                   (gamefield_size[0] + 2 * borders_width) * pixel_size, borders_width_in_real_pixels))
     # draw right border
     pg.draw.rect(screen, borders_color,
