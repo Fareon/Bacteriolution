@@ -31,6 +31,10 @@ def handle_events(events):
             gm.clickpos = pg.mouse.get_pos()
             gm.last_clicked_camera_pos = gm.camera_pos
             # print(gm.ScreenToScene(gm, gm.clickpos))
+            if(event.button == 4):
+                gm.do_zoom(gm, +1)
+            if (event.button == 5):
+                gm.do_zoom(gm, -1)
 
 
 def main():
@@ -68,6 +72,14 @@ def main():
         if keys_pressed[pg.K_DOWN] or keys_pressed[pg.K_s]:
             gm.move_camera(gm, (0, -1))
 
+        if keys_pressed[pg.K_z]:
+            gm.do_zoom(gm, +1)
+        if keys_pressed[pg.K_x]:
+            gm.do_zoom(gm, -1)
+
+        #must go through all events here additionaly, otherwise won't scroll continuesly
+
+
         # CALCULATE NEW POS
         if gm.frame % (gm.FPS // gm.Game_FPS) == 0:
             #any gamecore events happen here
@@ -77,9 +89,8 @@ def main():
                     cell.move(move_to)
                     gc.eat_food(cell)
             for cell in gc.cells:
-                if gm.clickpos is not None:
-                    cell.move(cell.evaluate_direction(gc.grid, gc.food_generators))
-                    gc.eat_food(cell)
+                cell.move(cell.evaluate_direction(gc.grid, gc.food_generators))
+                gc.eat_food(cell)
 
             for food_gen in gc.food_generators:
                 if f.chance(food_gen.rate):

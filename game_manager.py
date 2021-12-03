@@ -9,6 +9,10 @@ def ScreenToScene(self, screen_point):
 def move_camera(self, direction):
     self.camera_pos = self.camera_pos + np.array(list(direction) )*self.camera_speed*self.dt
 
+def do_zoom(self, direction):
+    self.zoom = self.zoom + direction*self.zoom_speed*self.dt
+
+
 clickpos = None
 
 zoom = 4
@@ -25,3 +29,4 @@ dt = 0.01
 camera_pos = np.array([scene_width/2, scene_height/2])
 last_clicked_camera_pos = camera_pos
 camera_speed = 50       #vector magnitude
+zoom_speed = 3
