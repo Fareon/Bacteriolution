@@ -36,12 +36,13 @@ def check_for_food(point, radius):
     for obj in content:
         if obj.game_object == 'food':
             answer.append(obj)
-
+    if(answer != []): print(answer)
     return answer
 
 def eat_food(cell):
     x, y = cell.x, cell.y
     all_food = check_for_food((x, y), cell.r)
-    for food in all_food:
-        grid[food.x][food.y].remove(food)
+    for food_eaten in all_food:
+        grid[food_eaten.x][food_eaten.y].remove(food_eaten)
+        food.remove(food_eaten)
         cell.eat()
