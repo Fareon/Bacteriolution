@@ -4,7 +4,7 @@ import game_core as gc
 import game_manager as gm
 from color import color
 import tricky_functions as f
-from numpy import exp
+from numpy import exp, cos, sin
 
 
 class Cell:
@@ -156,13 +156,20 @@ class FoodSource:
         self.x = position[0]
         self.y = position[1]
         self.r = 2
-        self.range = 15
+        self.range = 20
         self.rate = 0.1      #chance to generate food current frame
         self.color = color.GREEN
 
     def gen_food(self):
-        x_born = self.x + (-1)**(randint(1,2)) * randint(2, self.range)
-        y_born = self.y + (-1) ** (randint(1, 2)) * randint(2, self.range)
+
+        r = (randint(4, self.range))**0.75
+        angle = randint(0, 360)
+
+        x_born = self.x + r*cos(angle)
+        y_born = self.y + r * sin(angle)
+
+        #x_born = self.x + (-1)**(randint(1,2)) * randint(2, self.range)
+        #y_born = self.y + (-1) ** (randint(1, 2)) * randint(2, self.range)
 
         x_born = f.clamp(x_born, 2, gm.scene_width - 3)
         y_born = f.clamp(y_born, 2, gm.scene_height - 3)

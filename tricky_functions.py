@@ -1,7 +1,7 @@
 def clamp(x, a, b):
     if(x < a): return a
     elif(x > b): return b
-    else: return x
+    else: return int(x)
 
 from numpy import random
 

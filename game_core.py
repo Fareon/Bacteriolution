@@ -26,7 +26,7 @@ def born_food_gen(pos):
 
 def check_for_food(point, radius):
     answer = []
-    x, y = point
+    x, y = np.array(point).astype(int)
     content = []
 
     for x_check in range(x - radius, x + radius + 1, 1):
