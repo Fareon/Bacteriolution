@@ -73,7 +73,7 @@ class Cell:
         :param grid: map of objects on the playing surface
         :return: tuple of 2 ints -- position of direction
         """
-        food_koef = 1
+        food_koef = 0.25
         heading_position = [self.x, self.y]
         if self.y + self.vision_distance >= len(grid):
             rows = grid[self.y - self.vision_distance:]
@@ -93,11 +93,13 @@ class Cell:
                     if unit:
                         unit = unit[0]
                         if unit.cell_type == 'food':  # FIXME: has to be edited in order to fit the model
-                            heading_position[0] += (unit.x - self.x) * food_koef
-                            heading_position[1] += (unit.y - self.y) * food_koef
-                        elif unit.cell_type != self.cell_type:
-                            heading_position[0] -= int(30 / (1 + exp(-(unit.x - self.x) + 5)))
-                            heading_position[1] -= int(30 / (1 + exp(-(unit.y - self.y) + 5)))
+                            heading_position[0] += int((unit.x - self.x) * food_koef)
+                            heading_position[1] += int((unit.y - self.y) * food_koef)
+                        elif unit.cell_type != self.cell_type and unit.r > self.r:
+                            heading_position[0] -= int(30 / (1 + exp(-(unit.x - self.x) + 5))) \
+                                                   * unit.r ** 2 - self.r ** 2
+                            heading_position[1] -= int(30 / (1 + exp(-(unit.y - self.y) + 5))) \
+                                                   * unit.r ** 2 - self.r ** 2
         if heading_position == [self.x, self.y]:
             heading_position = self.evaluate_foodsource(list_of_foodsources)
         for _ in range(2):
@@ -175,11 +177,10 @@ class Food:
     This class controls food and its position
     """
     AMOUNT = 1
-    RADIUS = 1
     cell_type = 'food'
     game_object = 'food'
 
     def __init__(self, food_position: tuple):
         self.x, self.y = self.position = food_position
-        self.r = self.RADIUS
+        self.r = 1
         self.color = color.BLUE

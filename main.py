@@ -39,7 +39,7 @@ def main():
     screen = pg.display.set_mode((gm.screen_width, gm.screen_height))
     borders_width = 2 #map visual borders
 
-    for i in range(1):
+    for i in range(4):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_food_gen((x_born, y_born))
