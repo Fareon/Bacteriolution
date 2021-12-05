@@ -22,10 +22,9 @@ def draw_borders(screen, screen_size, zoom, gamefield_size, borders_color, borde
     :param camera_pos: coords of camera [x, y]
     '''
     pixel_size = zoom
-    pixel_view_amount = [int(screen_size[0] / zoom) + 1, int(screen_size[1] / zoom) + 1]
     # coords of up left frame-border corner in new system of coords
-    x0 = -camera_pos[0] + int((pixel_view_amount[0]) / 2) - borders_width
-    y0 = camera_pos[1] + int((pixel_view_amount[1]) / 2) - borders_width - gamefield_size[1]
+    x0 = -camera_pos[0] + screen_size[0] / (2 * zoom) - borders_width
+    y0 = camera_pos[1] + screen_size[1] / (2 * zoom) - borders_width - gamefield_size[1]
     borders_width_in_real_pixels = borders_width * pixel_size
     if(borders_width_in_real_pixels < 1):
         borders_width_in_real_pixels = 1
@@ -47,22 +46,24 @@ def draw_borders(screen, screen_size, zoom, gamefield_size, borders_color, borde
                   borders_width_in_real_pixels, (gamefield_size[1] + 2 * borders_width) * pixel_size))
 
 
-def choose_objects_for_drawing(objects, camera_pos, pixel_view_amount):
+def choose_objects_for_drawing(objects, camera_pos, screen_size, zoom):
     '''
     we check if object from array objects situated on our screen and should be drawn
     :param objects: list with objects we want to draw
     :param camera_pos: coords of camera [x, y]
-    :param pixel_view_amount: how many pixels we want to draw [row length, column length]
+    :param screen_size: [screen_with, screen_height]
+    :param zoom: How much bigger should be our pixel (element of our pixel set), then screen pixel
     '''
-    int_camera_coords = [int(camera_pos[0]), int(camera_pos[1])]
-    scene_objects = []  # list of objects, located in camera area
+    # how many pixels we want to draw [row length, column length]
+    pixel_view_amount = [int(screen_size[0] / zoom) + 1, int(screen_size[1] / zoom) + 1]
+    scene_objects = []  # list of objects, located in camera area.
     for obj in objects:
-        x = obj.x - int_camera_coords[0]
-        y = -1 * (obj.y - int_camera_coords[1])
+        x = obj.x - camera_pos[0]
+        y = -1 * (obj.y - camera_pos[1])
         r = obj.r
-        if ((abs(x) <= (pixel_view_amount[0] + 1) / 2 + r) and (abs(y) <= (pixel_view_amount[1] + 1) / 2 + r)):
+        if ((abs(x) <= pixel_view_amount[0] / 2 + r) and (abs(y) <= pixel_view_amount[1] / 2 + r)):
             scene_objects.append(
-                [int(x + (pixel_view_amount[0]) / 2), int(y + (pixel_view_amount[1]) / 2), r, obj.color])
+                [x + screen_size[0] / (2 * zoom), y + screen_size[1] / (2 * zoom), r, obj.color])
             # there are objects in new system of coords in this list
     return scene_objects
 
@@ -110,11 +111,8 @@ def draw_sqare_objects(screen, objects, camera_pos, screen_size, zoom):
     :param screen_size: [screen_with, screen_height]
     :param zoom: How much bigger should be our pixel (element of our pixel set), then screen pixel
     '''
-    dx = camera_pos[0] - int(camera_pos[0])  # offset of pixel net, related not int coords of camera
-    dy = camera_pos[1] - int(camera_pos[1])
     pixel_size = zoom
-    pixel_view_amount = [int(screen_size[0] / zoom) + 1, int(screen_size[1] / zoom) + 1]
-    scene_cells = choose_objects_for_drawing(objects, camera_pos, pixel_view_amount)
+    scene_cells = choose_objects_for_drawing(objects, camera_pos, screen_size, zoom)
     sqare_objects_display(screen, pixel_size, scene_cells)
 
 
@@ -130,6 +128,5 @@ def draw_cross_objects(screen, objects, camera_pos, screen_size, zoom):
     dx = camera_pos[0] - int(camera_pos[0])  # offset of pixel net, related not int coords of camera
     dy = camera_pos[1] - int(camera_pos[1])
     pixel_size = zoom
-    pixel_view_amount = [int(screen_size[0] / zoom) + 1, int(screen_size[1] / zoom) + 1]
-    scene_cells = choose_objects_for_drawing(objects, camera_pos, pixel_view_amount)
+    scene_cells = choose_objects_for_drawing(objects, camera_pos, screen_size, zoom)
     cross_objects_display(screen, pixel_size, scene_cells)
