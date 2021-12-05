@@ -4,7 +4,7 @@ import game_core as gc
 import game_manager as gm
 from color import color
 import tricky_functions as f
-from numpy import exp, cos, sin, array
+from numpy import cos, sin, array
 from numpy.linalg import norm
 
 
@@ -18,16 +18,16 @@ class Cell:
     init_vision_distance = 10
     game_object = 'food_gen'
 
-    def __init__(self, x, y, cell_type):
+    def __init__(self, x, y, cell_color, cell_type):
         """
         :param x: horizontal position on the grid.py
         :param y: vertical position on the grid.py
-        :param cell_type: type of a cell (contains color) (GREEN, for example)
+        :param color: color of a cell (GREEN, for example)
         """
         self.x = x
         self.y = y
         self.cell_type = cell_type  # this is needed for future managing
-        self.color = cell_type
+        self.color = cell_color
         self.r = self.init_r
         self.direction = None  # will be a list of len 4 (up, right, down, left)
         self.velocity = self.init_velocity
@@ -35,6 +35,7 @@ class Cell:
         self.energy = None  # In future will stand for hunger
         self.life = None  # In future will stand for how ling the cell is going to live
         self.food_level = 1
+        self.heading_position = None
 
     def move(self, position: tuple):
         """
@@ -44,18 +45,19 @@ class Cell:
         :param position: tuple (len = 2), with coordinates of the most preferable direction
         """
         self.direction = [1 for _ in range(4)]  # FIXME: has to be normalized according to the coordinates
-        if position[0] >= self.x and position[1] >= self.y:
-            self.direction[0] = position[1] - self.y
-            self.direction[1] = position[0] - self.x
-        elif position[0] >= self.x:
-            self.direction[2] = self.y - position[1]
-            self.direction[1] = position[0] - self.x
-        elif position[1] >= self.y:
-            self.direction[0] = position[1] - self.y
-            self.direction[3] = self.x - position[0]
-        else:
-            self.direction[2] = self.y - position[1]
-            self.direction[3] = self.x - position[0]
+        if position[0] != self.x and position[1] != self.y:
+            if position[0] >= self.x and position[1] >= self.y:
+                self.direction[0] = position[1] - self.y
+                self.direction[1] = position[0] - self.x
+            elif position[0] >= self.x:
+                self.direction[2] = self.y - position[1]
+                self.direction[1] = position[0] - self.x
+            elif position[1] >= self.y:
+                self.direction[0] = position[1] - self.y
+                self.direction[3] = self.x - position[0]
+            else:
+                self.direction[2] = self.y - position[1]
+                self.direction[3] = self.x - position[0]
         if self.x <= self.r + 2:
             self.direction[3] = 0
         elif self.x >= len(gc.grid) - (self.r + 2):
@@ -74,7 +76,6 @@ class Cell:
 
         gc.grid[self.x][self.y].append(self)
 
-
     #  Егор, пока что не реализцуй эту функцию,
     #  там надо прописать типы у всех типов, потому что это влияет на отпределение направления
     def evaluate_direction(self, grid: list, list_of_foodsources: list):
@@ -85,40 +86,46 @@ class Cell:
         :return: tuple of 2 ints -- position of direction
         """
         cell_see_food = False
-        food_koef = 1
+        food_wish = 1
         fear = 10
+        food_count = 0
+        food_gen_count = 0
+        cell_see_cell = False
         heading_position = [self.x, self.y]
-        if self.y + self.vision_distance >= len(grid):
-            rows = grid[self.y - self.vision_distance:]
-        elif self.y - self.vision_distance <= 0:
-            rows = grid[:self.y + self.vision_distance]
+        closest_foodsource = []
+        if self.x + self.vision_distance >= len(grid):
+            columns = grid[self.x - self.vision_distance:]
+        elif self.x - self.vision_distance <= 0:
+            columns = grid[:self.x + self.vision_distance]
         else:
-            rows = grid[self.y - self.vision_distance:self.y + self.vision_distance]
-        for row in rows:
-            if self.x + self.vision_distance >= len(row):
-                objects = grid[self.x - self.vision_distance:]
-            elif self.x - self.vision_distance <= 0:
-                objects = grid[:self.y + self.vision_distance]
+            columns = grid[self.x - self.vision_distance:self.x + self.vision_distance]
+        for row in columns:
+            if self.y + self.vision_distance >= len(row):
+                rows = grid[self.y - self.vision_distance:]
+            elif self.y - self.vision_distance <= 0:
+                rows = grid[:self.y + self.vision_distance]
             else:
-                objects = grid[self.y - self.vision_distance:self.y + self.vision_distance]
-            for dot in objects:
+                rows = grid[self.y - self.vision_distance:self.y + self.vision_distance]
+            for dot in rows:
                 for unit in dot:
                     if unit:
                         unit = unit[0]
-                        if unit.cell_type != self.cell_type and unit.r > self.r:
-                            heading_position[0] = self.x - (unit.x - self.x) * fear
-                            heading_position[1] = self.y - (unit.y - self.y) * fear
-                        elif (not cell_see_food) and unit.cell_type == 'food':  # FIXME: has to be edited in order to fit the model
-                            heading_position[0] += int((unit.x - self.x) * food_koef)
-                            heading_position[1] += int((unit.y - self.y) * food_koef)
-                            cell_see_food = True
-        if heading_position == [self.x, self.y]:
-            heading_position = self.evaluate_foodsource(list_of_foodsources)
-        for _ in range(2):
-            if heading_position[_] < 0:
-                heading_position[_] = 0
-            elif heading_position[_] > len(grid):
-                heading_position[_] = len(grid)
+                        #if unit.cell_type != self.cell_type: #and unit.r > self.r + 1 and unit.cell_type != "food":
+                        heading_position[0] -= (unit.x - self.x) * fear
+                        heading_position[1] -= (unit.y - self.y) * fear
+                        cell_see_food = True
+                        cell_see_cell = True
+                        # elif unit.cell_type == 'food':  # FIXME: has to be edited in order to fit the model
+                        # food_count += 1
+                        # if not cell_see_food:
+                        #  heading_position[0] += int((unit.x - self.x) * food_wish)
+                        #  heading_position[1] += int((unit.y - self.y) * food_wish)
+                        #  cell_see_food = True
+                        # elif unit.cell_type == 'food_gen':
+                        # food_gen_count += 1
+                        # closest_foodsource = unit
+        # if food_count <= 9 and food_gen_count != 0 and (not cell_see_cell):
+        # heading_position = self.evaluate_foodsource(list_of_foodsources)
         return tuple(heading_position)
 
     def evaluate_foodsource(self, list_of_foodsources: list):
@@ -129,12 +136,12 @@ class Cell:
         """
         heading_position = [list_of_foodsources[0].x, list_of_foodsources[0].y]
         position = array([self.x, self.y])
-        first_gen = array([list_of_foodsources[0].x, list_of_foodsources[0].y])
         for _ in range(1, len(list_of_foodsources)):
+            first_gen = array(heading_position)
             gen_position = array([list_of_foodsources[_].x, list_of_foodsources[_].y])
-            init_distance = norm(position - heading_position)
+            init_distance = norm(position - first_gen)
             distance = norm(position - gen_position)
-            if distance < init_distance:
+            if init_distance > distance >= 9:
                 heading_position = [list_of_foodsources[_].x, list_of_foodsources[_].y]
         return heading_position
 
@@ -159,7 +166,6 @@ class Cell:
             self.grow()
 
 
-
 class FoodSource:
     """
     This class controls the position of a food source
@@ -172,19 +178,18 @@ class FoodSource:
         self.y = position[1]
         self.r = 2
         self.range = 20
-        self.rate = 0.1      #chance to generate food current frame
+        self.rate = 0.05  # chance to generate food current frame
         self.color = color.GREEN
 
     def gen_food(self):
-
-        r = (randint(4, self.range))**0.75
+        r = (randint(4, self.range)) ** 0.75
         angle = randint(0, 360)
 
-        x_born = self.x + r*cos(angle)
+        x_born = self.x + r * cos(angle)
         y_born = self.y + r * sin(angle)
 
-        #x_born = self.x + (-1)**(randint(1,2)) * randint(2, self.range)
-        #y_born = self.y + (-1) ** (randint(1, 2)) * randint(2, self.range)
+        # x_born = self.x + (-1)**(randint(1,2)) * randint(2, self.range)
+        # y_born = self.y + (-1) ** (randint(1, 2)) * randint(2, self.range)
 
         x_born = f.clamp(x_born, 2, gm.scene_width - 3)
         y_born = f.clamp(y_born, 2, gm.scene_height - 3)
