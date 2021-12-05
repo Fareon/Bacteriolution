@@ -54,12 +54,21 @@ class Cell:
         else:
             self.direction[2] = self.y - position[1]
             self.direction[3] = self.x - position[0]
+        if self.x <= self.r:
+            self.direction[3] = 0
+        elif self.x >= gm.screen_width + self.r:
+            self.direction[1] = 0
+        if self.y <= self.r:
+            self.direction[2] = 0
+        elif self.y >= gm.screen_height + self.r:
+            self.direction[0] = 0
+
         final_direction = choices(self.direct_list, weights=self.direction)[0]
 
         gc.grid[self.x][self.y].remove(self)
 
-        self.y += final_direction[1] * self.velocity
         self.x += final_direction[0] * self.velocity
+        self.y += final_direction[1] * self.velocity
 
         gc.grid[self.x][self.y].append(self)
 
