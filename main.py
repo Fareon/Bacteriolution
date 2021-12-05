@@ -48,15 +48,15 @@ def main():
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_food_gen((x_born, y_born))
 
-    for i in range(0):
+    for i in range(1, 3):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
-        gc.born_cell([x_born, y_born], color.random())
+        gc.born_cell([x_born, y_born], color.random(), i)
 
     for i in range(1):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
-        gc.born_self_cell([x_born, y_born], color.random())
+        gc.born_self_cell([x_born, y_born], color.random(), i)
 
     while alive:
         handle_events(pg.event.get())
