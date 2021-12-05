@@ -4,7 +4,8 @@ import game_core as gc
 import game_manager as gm
 from color import color
 import tricky_functions as f
-from numpy import exp, cos, sin
+from numpy import exp, cos, sin, array
+from numpy.linalg import norm
 
 
 class Cell:
@@ -39,6 +40,7 @@ class Cell:
         """
         Moves the cell according to its direction probabilities.
         Counts the weight of directions accordingly and moves the cell after choosing direction.
+        :param grid: grid which defines the bonds
         :param position: tuple (len = 2), with coordinates of the most preferable direction
         """
         self.direction = [1 for _ in range(4)]  # FIXME: has to be normalized according to the coordinates
@@ -54,13 +56,13 @@ class Cell:
         else:
             self.direction[2] = self.y - position[1]
             self.direction[3] = self.x - position[0]
-        if self.x <= self.r:
+        if self.x <= self.r + 2:
             self.direction[3] = 0
-        elif self.x >= gm.screen_width + self.r:
+        elif self.x >= len(gc.grid) - (self.r + 2):
             self.direction[1] = 0
-        if self.y <= self.r:
+        if self.y <= self.r + 2:
             self.direction[2] = 0
-        elif self.y >= gm.screen_height + self.r:
+        elif self.y >= len(gc.grid[0]) - (self.r + 2):
             self.direction[0] = 0
 
         final_direction = choices(self.direct_list, weights=self.direction)[0]
@@ -82,7 +84,9 @@ class Cell:
         :param grid: map of objects on the playing surface
         :return: tuple of 2 ints -- position of direction
         """
-        food_koef = 0.25
+        cell_see_food = False
+        food_koef = 1
+        fear = 10
         heading_position = [self.x, self.y]
         if self.y + self.vision_distance >= len(grid):
             rows = grid[self.y - self.vision_distance:]
@@ -101,14 +105,13 @@ class Cell:
                 for unit in dot:
                     if unit:
                         unit = unit[0]
-                        if unit.cell_type == 'food':  # FIXME: has to be edited in order to fit the model
+                        if unit.cell_type != self.cell_type and unit.r > self.r:
+                            heading_position[0] = self.x - (unit.x - self.x) * fear
+                            heading_position[1] = self.y - (unit.y - self.y) * fear
+                        elif (not cell_see_food) and unit.cell_type == 'food':  # FIXME: has to be edited in order to fit the model
                             heading_position[0] += int((unit.x - self.x) * food_koef)
                             heading_position[1] += int((unit.y - self.y) * food_koef)
-                        elif unit.cell_type != self.cell_type and unit.r > self.r:
-                            heading_position[0] -= int(30 / (1 + exp(-(unit.x - self.x) + 5))) \
-                                                   * unit.r ** 2 - self.r ** 2
-                            heading_position[1] -= int(30 / (1 + exp(-(unit.y - self.y) + 5))) \
-                                                   * unit.r ** 2 - self.r ** 2
+                            cell_see_food = True
         if heading_position == [self.x, self.y]:
             heading_position = self.evaluate_foodsource(list_of_foodsources)
         for _ in range(2):
@@ -125,9 +128,12 @@ class Cell:
         :return: heading position (list)
         """
         heading_position = [list_of_foodsources[0].x, list_of_foodsources[0].y]
+        position = array([self.x, self.y])
+        first_gen = array([list_of_foodsources[0].x, list_of_foodsources[0].y])
         for _ in range(1, len(list_of_foodsources)):
-            init_distance = (self.x - heading_position[0]) ** 2 + (self.y - heading_position[1]) ** 2
-            distance = (self.x - list_of_foodsources[_].x) ** 2 + (self.y - list_of_foodsources[_].y) ** 2
+            gen_position = array([list_of_foodsources[_].x, list_of_foodsources[_].y])
+            init_distance = norm(position - heading_position)
+            distance = norm(position - gen_position)
             if distance < init_distance:
                 heading_position = [list_of_foodsources[_].x, list_of_foodsources[_].y]
         return heading_position
