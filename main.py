@@ -48,7 +48,7 @@ def main():
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_food_gen((x_born, y_born))
 
-    for i in range(1, 3):
+    for i in range(1, 2):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_cell([x_born, y_born], color.random(), i)
@@ -90,7 +90,7 @@ def main():
                     cell.move(move_to)
                 gc.eat_food(cell)
             for cell in gc.cells:
-                cell.move(cell.evaluate_direction(gc.grid, gc.food_generators))
+                cell.move(cell.think_ahead(gc.cells+gc.self_cells, gc.food_generators))
                 gc.eat_food(cell)
 
             for food_gen in gc.food_generators:

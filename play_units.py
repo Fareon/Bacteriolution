@@ -8,6 +8,11 @@ from numpy import cos, sin, array
 from numpy.linalg import norm
 
 
+def close(obj_1, obj_2, distance):
+    obj_distance = (obj_1.x - obj_2.x) ** 2 + (obj_1.y - obj_2.y) ** 2
+    return obj_distance < distance ** 2
+
+
 class Cell:
     """
     This class is responsible for the cell itself, her movement and attributes
@@ -15,7 +20,7 @@ class Cell:
     init_r = 2
     direct_list = [(0, 1), (1, 0), (0, -1), (-1, 0)]
     init_velocity = 1
-    init_vision_distance = 10
+    init_vision_distance = 20
     game_object = 'food_gen'
 
     def __init__(self, x, y, cell_color, cell_type):
@@ -101,20 +106,22 @@ class Cell:
             columns = grid[self.x - self.vision_distance:self.x + self.vision_distance]
         for row in columns:
             if self.y + self.vision_distance >= len(row):
-                rows = grid[self.y - self.vision_distance:]
-            elif self.y - self.vision_distance <= 0:
                 rows = grid[:self.y + self.vision_distance]
+            elif self.y - self.vision_distance <= 0:
+                rows = grid[self.y - self.vision_distance:]
             else:
                 rows = grid[self.y - self.vision_distance:self.y + self.vision_distance]
             for dot in rows:
                 for unit in dot:
                     if unit:
                         unit = unit[0]
-                        #if unit.cell_type != self.cell_type: #and unit.r > self.r + 1 and unit.cell_type != "food":
-                        heading_position[0] -= (unit.x - self.x) * fear
-                        heading_position[1] -= (unit.y - self.y) * fear
-                        cell_see_food = True
-                        cell_see_cell = True
+                        if unit.cell_type != self.cell_type and unit.cell_type != "food" and unit.cell_type != "food_gen":
+                            #print("see enemy", unit.cell_type)
+                            #if unit.cell_type != self.cell_type: #and unit.r > self.r + 1 and unit.cell_type != "food":
+                            heading_position[0] -= (unit.x - self.x)
+                            heading_position[1] -= (unit.y - self.y)
+                        #cell_see_food = True
+                        #cell_see_cell = True
                         # elif unit.cell_type == 'food':  # FIXME: has to be edited in order to fit the model
                         # food_count += 1
                         # if not cell_see_food:
@@ -128,6 +135,21 @@ class Cell:
         # heading_position = self.evaluate_foodsource(list_of_foodsources)
         return tuple(heading_position)
 
+    def think_ahead(self, cells, foodsources):
+        heading_position = [self.x, self.y]
+        cell_see_enemy = False
+        for cell in cells:
+            if cell.cell_type != self.cell_type:
+                if cell.r > self.r + 1:
+                    if close(cell, self, self.vision_distance):
+                        heading_position[0] -= (cell.x - self.x)
+                        heading_position[1] -= (cell.y - self.y)
+        for foodsource in foodsources:
+            if not cell_see_enemy:
+                pass #heading_position = self.evaluate_foodsource(foodsources)
+        #print(heading_position)
+        return tuple(heading_position)
+
     def evaluate_foodsource(self, list_of_foodsources: list):
         """
         this function stands for the cell decision to move to a fodsource if no enemies are present
@@ -135,13 +157,10 @@ class Cell:
         :return: heading position (list)
         """
         heading_position = [list_of_foodsources[0].x, list_of_foodsources[0].y]
-        position = array([self.x, self.y])
         for _ in range(1, len(list_of_foodsources)):
-            first_gen = array(heading_position)
-            gen_position = array([list_of_foodsources[_].x, list_of_foodsources[_].y])
-            init_distance = norm(position - first_gen)
-            distance = norm(position - gen_position)
-            if init_distance > distance >= 9:
+            init_distance = (self.x - heading_position[0]) ** 2 + (self.y - heading_position[1]) ** 2
+            distance = (self.x - list_of_foodsources[_].x) ** 2 + (self.y - list_of_foodsources[_].y) ** 2
+            if init_distance > distance:
                 heading_position = [list_of_foodsources[_].x, list_of_foodsources[_].y]
         return heading_position
 
