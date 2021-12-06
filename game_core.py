@@ -11,6 +11,7 @@ grid = [[ [] for _ in range(gm.scene_height)] for __ in range(gm.scene_width)]
 
 def born_cell(pos, color, cell_type):
     new_cell = unit.Cell(pos[0], pos[1], color, cell_type)
+    new_cell.evaluate_foodsource(food_generators)
     cells.append(new_cell)
     grid[pos[0]][pos[1]].append(new_cell)
 

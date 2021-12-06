@@ -13,6 +13,18 @@ def close(obj_1, obj_2, distance):
     return obj_distance < distance ** 2
 
 
+def close_foodsource(cell, foodsources, distance):
+    result = None
+    for foodsource in foodsources:
+        if close(cell, foodsource, distance):
+            result = foodsource
+            pass
+    if result is not None:
+        return result
+    else:
+        return False
+
+
 class Cell:
     """
     This class is responsible for the cell itself, her movement and attributes
@@ -41,7 +53,7 @@ class Cell:
         self.life = None  # In future will stand for how ling the cell is going to live
         self.food_level = 1
         self.heading_position = None
-        self.chosen_foodsource = None
+        self.heading_foodsource = None
 
     def move(self, position: tuple):
         """
@@ -148,28 +160,32 @@ class Cell:
                         cell_see_enemy = True
         if not cell_see_enemy:
             many_food = self.count_food(food)
-            if many_food:
-                pass
+            cell_see_foodsource = close_foodsource(self, foodsources, self.vision_distance)
+            if not many_food:
+                self.evaluate_foodsource(foodsources)
+                heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
             else:
-                heading_position = self.evaluate_foodsource(foodsources)
+                heading_position = self.get_food(food)
             #for foodsource in foodsources:
                 #cell_see_source = close(self.x, foodsource, self.vision_distance)
         #print(heading_position)
         return tuple(heading_position)
 
-    def evaluate_foodsource(self, list_of_foodsources: list):
+    def evaluate_foodsource(self, foodsources: list, delete=None):
         """
         this function stands for the cell decision to move to a fodsource if no enemies are present
         :param list_of_foodsources: list of all foodsources on the map (objects). the cell decides to which one to go
         :return: heading position (list)
         """
-        heading_position = [list_of_foodsources[0].x, list_of_foodsources[0].y]
-        for _ in range(1, len(list_of_foodsources)):
-            init_distance = (self.x - heading_position[0]) ** 2 + (self.y - heading_position[1]) ** 2
+        self.heading_foodsource = foodsources[0]
+        list_of_foodsources = foodsources.copy()
+        if delete is not None:
+            list_of_foodsources.remove(delete)
+        for _ in range(0, len(list_of_foodsources)):
+            init_distance = (self.x - self.heading_foodsource.x) ** 2 + (self.y - self.heading_foodsource.y) ** 2
             distance = (self.x - list_of_foodsources[_].x) ** 2 + (self.y - list_of_foodsources[_].y) ** 2
             if init_distance > distance:
-                heading_position = [list_of_foodsources[_].x, list_of_foodsources[_].y]
-        return heading_position
+                self.heading_foodsource = list_of_foodsources[_]
 
     def count_food(self, food):
         count = 0
@@ -180,6 +196,14 @@ class Cell:
             return True
         else:
             return False
+
+    def get_food(self, food):
+        for foodie in food:
+            if close(self, foodie, self.vision_distance):
+                heading_position = [foodie.x, foodie.y]
+                pass
+        return heading_position
+
 
     def mutate(self, mutate_probabilities):
         pass
