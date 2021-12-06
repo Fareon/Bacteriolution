@@ -41,6 +41,7 @@ class Cell:
         self.life = None  # In future will stand for how ling the cell is going to live
         self.food_level = 1
         self.heading_position = None
+        self.chosen_foodsource = None
 
     def move(self, position: tuple):
         """
@@ -135,7 +136,7 @@ class Cell:
         # heading_position = self.evaluate_foodsource(list_of_foodsources)
         return tuple(heading_position)
 
-    def think_ahead(self, cells, foodsources):
+    def think_ahead(self, cells, foodsources, food):
         heading_position = [self.x, self.y]
         cell_see_enemy = False
         for cell in cells:
@@ -144,9 +145,15 @@ class Cell:
                     if close(cell, self, self.vision_distance):
                         heading_position[0] -= (cell.x - self.x)
                         heading_position[1] -= (cell.y - self.y)
-        for foodsource in foodsources:
-            if not cell_see_enemy:
-                pass #heading_position = self.evaluate_foodsource(foodsources)
+                        cell_see_enemy = True
+        if not cell_see_enemy:
+            many_food = self.count_food(food)
+            if many_food:
+                pass
+            else:
+                heading_position = self.evaluate_foodsource(foodsources)
+            #for foodsource in foodsources:
+                #cell_see_source = close(self.x, foodsource, self.vision_distance)
         #print(heading_position)
         return tuple(heading_position)
 
@@ -163,6 +170,16 @@ class Cell:
             if init_distance > distance:
                 heading_position = [list_of_foodsources[_].x, list_of_foodsources[_].y]
         return heading_position
+
+    def count_food(self, food):
+        count = 0
+        for foodie in food:
+            if close(self, foodie, self.vision_distance):
+                count += 1
+        if count >= 10:
+            return True
+        else:
+            return False
 
     def mutate(self, mutate_probabilities):
         pass
@@ -197,7 +214,7 @@ class FoodSource:
         self.y = position[1]
         self.r = 2
         self.range = 20
-        self.rate = 0.05  # chance to generate food current frame
+        self.rate = 0.03  # chance to generate food current frame
         self.color = color.GREEN
 
     def gen_food(self):
