@@ -1,5 +1,7 @@
 import pygame as pg
-
+global SQARE_OUTLINE_COLOR, SQARE_OUTLINE_WIDTH
+SQARE_OUTLINE_COLOR = (57, 57, 57)
+SQARE_OUTLINE_WIDTH = 1
 
 def draw_background(screen, background_color):
     '''
@@ -82,6 +84,8 @@ def sqare_objects_display(screen, pixel_size, scene_objects):
         color = obj[3]
         pg.draw.rect(screen, color,
                      ((x - r) * pixel_size, (y - r) * pixel_size, 2 * r * pixel_size, 2 * r * pixel_size))
+        pg.draw.rect(screen, SQARE_OUTLINE_COLOR,
+                     ((x - r) * pixel_size, (y - r) * pixel_size, 2 * r * pixel_size, 2 * r * pixel_size), SQARE_OUTLINE_WIDTH)
 
 
 def cross_objects_display(screen, pixel_size, scene_objects):
