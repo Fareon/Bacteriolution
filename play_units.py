@@ -175,12 +175,14 @@ class Cell:
             elif not many_food:
                 self.evaluate_foodsource(foodsources)
                 heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
+            elif many_food:
+                heading_position = self.get_food(food)
         return tuple(heading_position)
 
     def evaluate_foodsource(self, foodsources: list):
         """
         this function stands for the cell decision to move to a fodsource if no enemies are present
-        :param list_of_foodsources: list of all foodsources on the map (objects). the cell decides to which one to go
+        :param foodsources: list of all foodsources on the map (objects). the cell decides to which one to go
         :return: heading position (list)
         """
         food_list = foodsources.copy()
@@ -191,7 +193,7 @@ class Cell:
         for foodie in food:
             if close(self, foodie, self.vision_distance):
                 count += 1
-        if count >= 10:
+        if count >= 5:
             return True
         else:
             return False
