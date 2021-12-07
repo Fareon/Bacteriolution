@@ -160,32 +160,22 @@ class Cell:
                         cell_see_enemy = True
         if not cell_see_enemy:
             many_food = self.count_food(food)
-            cell_see_foodsource = close_foodsource(self, foodsources, self.vision_distance)
-            if not many_food:
+            cell_see_foodsource = close(self, self.heading_foodsource, self.vision_distance // 3)
+            if not cell_see_foodsource:
+                heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
+            elif not many_food:
                 self.evaluate_foodsource(foodsources)
                 heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
-            else:
-                heading_position = self.get_food(food)
-            #for foodsource in foodsources:
-                #cell_see_source = close(self.x, foodsource, self.vision_distance)
-        #print(heading_position)
         return tuple(heading_position)
 
-    def evaluate_foodsource(self, foodsources: list, delete=None):
+    def evaluate_foodsource(self, foodsources: list):
         """
         this function stands for the cell decision to move to a fodsource if no enemies are present
         :param list_of_foodsources: list of all foodsources on the map (objects). the cell decides to which one to go
         :return: heading position (list)
         """
-        self.heading_foodsource = foodsources[0]
-        list_of_foodsources = foodsources.copy()
-        if delete is not None:
-            list_of_foodsources.remove(delete)
-        for _ in range(0, len(list_of_foodsources)):
-            init_distance = (self.x - self.heading_foodsource.x) ** 2 + (self.y - self.heading_foodsource.y) ** 2
-            distance = (self.x - list_of_foodsources[_].x) ** 2 + (self.y - list_of_foodsources[_].y) ** 2
-            if init_distance > distance:
-                self.heading_foodsource = list_of_foodsources[_]
+        food_list = foodsources.copy()
+        self.heading_foodsource = choices(food_list)[0]
 
     def count_food(self, food):
         count = 0
