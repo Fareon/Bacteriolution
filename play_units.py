@@ -149,7 +149,9 @@ class Cell:
         return tuple(heading_position)
 
     def think_ahead(self, cells, foodsources, food):
+        cell_see_foodsource = close(self, self.heading_foodsource, self.vision_distance // 3)
         heading_position = [self.x, self.y]
+        cell_see_pray = False
         cell_see_enemy = False
         for cell in cells:
             if cell.cell_type != self.cell_type:
@@ -158,9 +160,16 @@ class Cell:
                         heading_position[0] -= (cell.x - self.x)
                         heading_position[1] -= (cell.y - self.y)
                         cell_see_enemy = True
-        if not cell_see_enemy:
+                elif cell.r < self.r - 1:
+                    if close(cell, self, self.vision_distance):
+                        heading_position[0] += (cell.x - self.x)
+                        heading_position[1] += (cell.y - self.y)
+                        cell_see_pray = True
+        if cell_see_enemy and close(self, self.heading_foodsource, self.vision_distance):
+            self.evaluate_foodsource(foodsources)
+            heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
+        elif not cell_see_enemy:
             many_food = self.count_food(food)
-            cell_see_foodsource = close(self, self.heading_foodsource, self.vision_distance // 3)
             if not cell_see_foodsource:
                 heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
             elif not many_food:
@@ -206,6 +215,7 @@ class Cell:
         self.life -= 1
 
     def grow(self):
+        self.vision_distance += 2
         self.food_level = 1
         self.r += 1
 
