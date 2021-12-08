@@ -9,11 +9,16 @@
              "selected_bg": "#25292e",
              "active_bg": "#25292e",
 
-             "normal_border": "#AAAAAA",
-             "hovered_border": "#AAAAAA",
-             "disabled_border": "#AAAAAA",
-             "selected_border": "#AAAAAA",
-             "active_border": "#AAAAAA"
+             "normal_border": "#0d0d0d",
+             "hovered_border": "#0d0d0d",
+             "disabled_border": "#0d0d0d",
+             "selected_border": "#0d0d0d",
+             "active_border": "#0d0d0d"
+         },
+         
+         "misc":
+         {
+             "border_width": "4"
          }
      },
      

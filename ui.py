@@ -6,14 +6,15 @@ import game_manager as gm
 class cell_icon:
     w, h = 120, 90
     x, y = gm.ui_panel_width*0.21, gm.screen_height*0.175
-    
+   
+step = 40
 class mutate:
-    w, h = +cell_icon.w, -50*6
-    x, y = cell_icon.x, cell_icon.y + 250
+    w, h = +cell_icon.w, -step*6
+    x, y = cell_icon.x, cell_icon.y + 200
     
 class split:
-    w, h = +cell_icon.w, -50*7
-    x, y = cell_icon.x, mutate.y + 50
+    w, h = +cell_icon.w, -step*7.5
+    x, y = cell_icon.x, mutate.y + step + 25
     
 
 
@@ -33,11 +34,11 @@ cell_icon_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((cell_icon
                                                  manager=manager)
 mutate_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((mutate.x, mutate.y), (mutate.x + mutate.w, mutate.y + mutate.h)),
                                                  text='MUTATE', object_id=f"#mutate",
-                                                 #parent_element = info_panel_button,
+                                                 parent_element = info_panel_button,
                                                  manager=manager)
 split_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((split.x, split.y), (split.x + split.w, split.y + split.h)),
                                                  text='SPLIT', object_id=f"#mutate",
-                                                 #parent_element = info_panel_button,
+                                                 parent_element = info_panel_button,
                                                  manager=manager)
 
 if __name__ == "__main__":
