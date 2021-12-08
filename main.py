@@ -48,6 +48,7 @@ def handle_events(events):
 
 
 def main():
+    global manager
     pg.init()
     
     pg.display.set_caption('Bacteriolution')
@@ -56,11 +57,12 @@ def main():
     borders_width = 2 #map visual borders
 
 
-    manager = pygame_gui.UIManager((800, 600))
+    manager = pygame_gui.UIManager((gm.screen_width, gm.screen_height))
 
-    hello_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((350, 275), (100, 50)),
-                                                 text='Say Hello',
+    hello_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((0, -10), (gm.ui_panel_width, gm.screen_height*1.2)),
+                                                 text='',
                                                  manager=manager)
+    hello_button.normal_bg = color.random()
 
     for i in range(7):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)

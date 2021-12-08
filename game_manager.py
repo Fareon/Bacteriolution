@@ -16,10 +16,11 @@ def do_zoom(self, direction):
 clickpos = None
 
 zoom = 4
-screen_width = 1280 * 2
-screen_height = 600 * 2
+screen_width = 1280
+screen_height = 600
 scene_width = screen_width//zoom
 scene_height = screen_height//zoom
+ui_panel_width = screen_width // 3
 
 ui_click = False
 
