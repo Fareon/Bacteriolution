@@ -2,6 +2,7 @@ import numpy as np
 import play_units as unit
 import game_manager as gm
 import ui
+from color import color
 
 #INITIAL SHIT
 cells = []
@@ -18,9 +19,7 @@ def born_cell(pos, color, cell_type):
 
 def born_self_cell(pos, color, cell_type):
     new_cell = unit.Cell(pos[0], pos[1], color, cell_type)
-    
-    ui.radius_text.set_text("Radius: " + str(new_cell.r))
-    ui.radius_string = str(new_cell.r)
+
     self_cells.append(new_cell)
     grid[pos[0]][pos[1]].append(new_cell)
 
@@ -50,3 +49,14 @@ def eat_food(cell):
         grid[food_eaten.x][food_eaten.y].remove(food_eaten)
         food.remove(food_eaten)
         cell.eat()
+        if(cell.color == color.PLAYER_COLOR):
+            update_ui()
+
+def update_ui():
+    #define maximum radius among self_cells
+    
+    max_r = 0
+    for cell in self_cells:
+        if(cell.r > max_r): max_r = cell.r
+    
+    ui.radius_text.set_text("Radius: " + str(max_r))

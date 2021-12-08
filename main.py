@@ -73,13 +73,13 @@ def main():
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_self_cell([x_born, y_born], color.PLAYER_COLOR, i)
-
+        
+    #COSTYL
+    ui.set_text()
     while alive:
         handle_events(pg.event.get())
         
-        #COSTYL
-        if(gm.frame == 10):
-            ui.set_text()
+        
         
         #DETECT INPUT
         keys_pressed = pg.key.get_pressed()

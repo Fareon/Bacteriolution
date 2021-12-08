@@ -15,6 +15,11 @@ class mutate:
 class split:
     w, h = +cell_icon.w, -step*7.5
     x, y = cell_icon.x, mutate.y + step + 25
+class radius:
+    x, y = (split.x - 50, split.y + 65)
+    x2, y2 = (split.x + split.w + 50, split.y + split.h)
+        
+
     
 
 
@@ -40,7 +45,7 @@ split_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((split.x, spli
                                                  parent_element = info_panel_button,
                                                  manager=manager)
 
-radius_text = pygame_gui.elements.UIButton(relative_rect=pg.Rect((split.x, split.y + 50), (split.x + split.w, split.y + split.h)),
+radius_text = pygame_gui.elements.UIButton(relative_rect=pg.Rect((radius.x, radius.y), (radius.x2, radius.y2)),
                                                  text='', object_id=f"#label2",
                                                  parent_element = info_panel_button,
                                                  manager=manager)
@@ -50,6 +55,7 @@ def set_text():
     your_cell_text.set_text('YOUR CELL')
     mutate_button.set_text('MUTATE')
     split_button.set_text('SPLIT')
+    radius_text.set_text('REACH FOOD')
 
 if __name__ == "__main__":
     exec(open("main.py").read())
