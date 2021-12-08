@@ -58,7 +58,7 @@ def main():
 
     screen = pg.display.set_mode((gm.screen_width, gm.screen_height))
     borders_width = 2 #map visual borders
-
+    
     for i in range(7):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
@@ -76,7 +76,11 @@ def main():
 
     while alive:
         handle_events(pg.event.get())
-
+        
+        #COSTYL
+        if(gm.frame == 10):
+            ui.set_text()
+        
         #DETECT INPUT
         keys_pressed = pg.key.get_pressed()
 

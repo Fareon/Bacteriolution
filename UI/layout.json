@@ -53,6 +53,37 @@
         }
      },
      
+     "#label2":
+     {
+         "colours":
+         {
+             "normal_bg": "#25292e",
+             "hovered_bg": "#25292e",
+             "disabled_bg": "#25292e",
+             "selected_bg": "#25292e",
+             "active_bg": "#25292e",
+                
+             "normal_text": "#c5cbd8",
+            
+             "normal_border": "#25292e",
+             "hovered_border": "#25292e",
+             "disabled_border": "#25292e",
+             "selected_border": "#25292e",
+             "active_border": "#25292e"
+         },
+
+         "font":
+         {
+             "name": "8-bit",
+             "size": "60",
+             "regular_path": "UI/Pixeboy-z8XGD.ttf"
+        },
+        "misc":
+        {
+         "shadow_width": "50"
+        }
+     },
+     
      "#cell_icon":
      {
      "colours":

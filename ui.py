@@ -40,12 +40,16 @@ split_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((split.x, spli
                                                  parent_element = info_panel_button,
                                                  manager=manager)
 
+radius_text = pygame_gui.elements.UIButton(relative_rect=pg.Rect((split.x, split.y + 50), (split.x + split.w, split.y + split.h)),
+                                                 text='', object_id=f"#label2",
+                                                 parent_element = info_panel_button,
+                                                 manager=manager)
+
+
 def set_text():
     your_cell_text.set_text('YOUR CELL')
     mutate_button.set_text('MUTATE')
     split_button.set_text('SPLIT')
-
-set_text()
 
 if __name__ == "__main__":
     exec(open("main.py").read())

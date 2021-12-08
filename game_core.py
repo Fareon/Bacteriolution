@@ -19,8 +19,8 @@ def born_cell(pos, color, cell_type):
 def born_self_cell(pos, color, cell_type):
     new_cell = unit.Cell(pos[0], pos[1], color, cell_type)
     
-    #ui.radius_text.set_text("Radius: " + str(new_cell.r))
-    #ui.radius_string = str(new_cell.r)
+    ui.radius_text.set_text("Radius: " + str(new_cell.r))
+    ui.radius_string = str(new_cell.r)
     self_cells.append(new_cell)
     grid[pos[0]][pos[1]].append(new_cell)
 
