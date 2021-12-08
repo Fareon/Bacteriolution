@@ -32,7 +32,59 @@
              "size": "90",
              "regular_path": "UI/Pixeboy-z8XGD.ttf"
         }
-     }
+     },
+     
+     "#cell_icon":
+     {
+     "colours":
+         {
+             "normal_bg": "#87CEEB",
+             "hovered_bg": "#87CEEB",
+             "disabled_bg": "#87CEEB",
+             "selected_bg": "#87CEEB",
+             "active_bg": "#87CEEB",
+
+             "normal_border": "#827f7f",
+             "hovered_border": "#827f7f",
+             "disabled_border": "#827f7f",
+             "selected_border": "#827f7f",
+             "active_border": "#827f7f"
+         },
+        "misc":
+         {
+             "border_width": "10"
+         }
+    },
+    
+    "#mutate":
+     {
+     "colours":
+         {
+             "normal_bg": "#47494a",
+             "hovered_bg": "#000000",
+             "disabled_bg": "#000000",
+             "selected_bg": "#000000",
+             "active_bg": "#000000",
+
+             "normal_border": "#0d0d0d",
+             "hovered_border": "#0d0d0d",
+             "disabled_border": "#0d0d0d",
+             "selected_border": "#0d0d0d",
+             "active_border": "#0d0d0d"
+         },
+        "misc":
+         {
+             "border_width": "5"
+         },
+         
+
+         "font":
+         {
+             "name": "8-bit",
+             "size": "60",
+             "regular_path": "UI/Pixeboy-z8XGD.ttf"
+        }
+    }
      
     
 }
