@@ -58,7 +58,7 @@ def main():
 
     manager = pygame_gui.UIManager((800, 600))
 
-    hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+    hello_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((350, 275), (100, 50)),
                                                  text='Say Hello',
                                                  manager=manager)
 
