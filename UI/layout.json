@@ -26,9 +26,19 @@
      {
          "colours":
          {
-             "dark_bg": "#25292e",
+             "normal_bg": "#25292e",
+             "hovered_bg": "#25292e",
+             "disabled_bg": "#25292e",
+             "selected_bg": "#25292e",
+             "active_bg": "#25292e",
+                
              "normal_text": "#c5cbd8",
-             "text_shadow": "#505050"
+            
+             "normal_border": "#25292e",
+             "hovered_border": "#25292e",
+             "disabled_border": "#25292e",
+             "selected_border": "#25292e",
+             "active_border": "#25292e"
          },
 
          "font":
@@ -36,6 +46,10 @@
              "name": "8-bit",
              "size": "90",
              "regular_path": "UI/Pixeboy-z8XGD.ttf"
+        },
+        "misc":
+        {
+         "shadow_width": "50"
         }
      },
      
