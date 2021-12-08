@@ -239,7 +239,7 @@ class FoodSource:
         self.x = position[0]
         self.y = position[1]
         self.r = 2
-        self.range = 20
+        self.range = 100
         self.rate = 0.03  # chance to generate food current frame
         self.color = color.GREEN
 

@@ -1,4 +1,5 @@
 import pygame as pg
+import pygame_gui
 #import thorpy
 import time
 import numpy as np
@@ -17,7 +18,16 @@ alive = True
 
 def handle_events(events):
     global alive
+    global hello_button
+    global manager
     for event in events:
+        
+        if event.type == pg.USEREVENT:
+             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                 if event.ui_element == hello_button:
+                     print('Hello World!')
+        
+        manager.process_events(event)
         if event.type == pg.QUIT:
             alive = False
         if event.type == pg.KEYDOWN:
@@ -39,21 +49,30 @@ def handle_events(events):
 
 def main():
     pg.init()
+    
+    pg.display.set_caption('Bacteriolution')
 
     screen = pg.display.set_mode((gm.screen_width, gm.screen_height))
     borders_width = 2 #map visual borders
 
-    for i in range(3):
+
+    manager = pygame_gui.UIManager((800, 600))
+
+    hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+                                                 text='Say Hello',
+                                                 manager=manager)
+
+    for i in range(7):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_food_gen((x_born, y_born))
 
-    for i in range(1, 2):
+    for i in range(1, 25):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_cell([x_born, y_born], color.random(), i)
 
-    for i in range(1):
+    for i in range(2):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_self_cell([x_born, y_born], color.random(), i)
@@ -119,7 +138,10 @@ def main():
         # gamefield_size = [gamefield_width, gamefield_height] - размеры игрового поля, где может находиться клетка
         # borders_width - толщина границы в наших пикселях
 
-
+        
+        manager.update(1.0 / gm.Game_FPS)
+        manager.draw_ui(screen)
+        
         pg.display.update()
         time.sleep(1.0 / gm.Game_FPS)
         gm.frame += 1

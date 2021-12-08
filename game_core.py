@@ -37,7 +37,6 @@ def check_for_food(point, radius):
     for obj in content:
         if obj.game_object == 'food':
             answer.append(obj)
-    if(answer != []): print(answer)
     return answer
 
 def eat_food(cell):

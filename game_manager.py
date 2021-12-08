@@ -16,13 +16,15 @@ def do_zoom(self, direction):
 clickpos = None
 
 zoom = 4
-screen_width = 1280
-screen_height = 650
+screen_width = 1280 * 2
+screen_height = 600 * 2
 scene_width = screen_width//zoom
 scene_height = screen_height//zoom
 
+ui_click = False
+
 FPS = 200
-Game_FPS = 60
+Game_FPS = 120
 frame = 0
 dt = 0.01
 
