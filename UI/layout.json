@@ -1,0 +1,25 @@
+{
+     "#info_panel":
+     {
+         "colours":
+         {
+             "normal_bg": "#25292e",
+             "hovered_bg": "#25292e",
+             "disabled_bg": "#25292e",
+             "selected_bg": "#25292e",
+             "active_bg": "#25292e",
+
+             "normal_border": "#AAAAAA",
+             "hovered_border": "#AAAAAA",
+             "disabled_border": "#AAAAAA",
+             "selected_border": "#AAAAAA",
+             "active_border": "#AAAAAA"
+         },
+         "font":
+         {
+             "name": "montserrat",
+             "size": "60",
+             "regular_path": "UI/Pixeboy-z8XGD.ttf"
+        }
+     }
+}

@@ -1,5 +1,6 @@
 import pygame as pg
 import pygame_gui
+import ui
 #import thorpy
 import time
 import numpy as np
@@ -18,16 +19,17 @@ alive = True
 
 def handle_events(events):
     global alive
-    global hello_button
-    global manager
     for event in events:
         
         if event.type == pg.USEREVENT:
              if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                 if event.ui_element == hello_button:
-                     print('Hello World!')
+                 if event.ui_element == ui.info_panel_button:
+                     gm.ui_click = True
+                     print('Iteracted with ui')
+                     
+                     
         
-        manager.process_events(event)
+        ui.manager.process_events(event)
         if event.type == pg.QUIT:
             alive = False
         if event.type == pg.KEYDOWN:
@@ -45,24 +47,17 @@ def handle_events(events):
                 gm.do_zoom(gm, +1)
             if (event.button == 5):
                 gm.do_zoom(gm, -1)
+                
+        gm.ui_click = False
 
 
 def main():
-    global manager
     pg.init()
     
     pg.display.set_caption('Bacteriolution')
 
     screen = pg.display.set_mode((gm.screen_width, gm.screen_height))
     borders_width = 2 #map visual borders
-
-
-    manager = pygame_gui.UIManager((gm.screen_width, gm.screen_height))
-
-    hello_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((0, -10), (gm.ui_panel_width, gm.screen_height*1.2)),
-                                                 text='',
-                                                 manager=manager)
-    hello_button.normal_bg = color.random()
 
     for i in range(7):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
@@ -141,8 +136,8 @@ def main():
         # borders_width - толщина границы в наших пикселях
 
         
-        manager.update(1.0 / gm.Game_FPS)
-        manager.draw_ui(screen)
+        ui.manager.update(1.0 / gm.Game_FPS)
+        ui.manager.draw_ui(screen)
         
         pg.display.update()
         time.sleep(1.0 / gm.Game_FPS)
