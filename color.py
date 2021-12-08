@@ -9,7 +9,7 @@ class color:
         """
         rand_color = (int(256*random.random()), int(256*random.random()), int(256*random.random()))
         return rand_color
-
+    PLAYER_COLOR = (135, 206, 235)
     RED = (255, 0, 0)
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
