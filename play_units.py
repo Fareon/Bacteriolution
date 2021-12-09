@@ -1,5 +1,4 @@
-from random import choices
-from random import randint
+from random import choices, randint
 import game_core as gc
 import game_manager as gm
 from color import color
@@ -33,9 +32,10 @@ class Cell:
     direct_list = [(0, 1), (1, 0), (0, -1), (-1, 0)]
     init_velocity = 1
     init_vision_distance = 20
-    game_object = 'food_gen'
+    game_object = 'food_gen'  # WTF?!
     init_split_radius = 6
-    direct_constant = 2
+    init_direct_constant = 2
+    mutating_parameters = [init_r, init_velocity, init_vision_distance, init_split_radius, init_direct_constant]
 
     def __init__(self, x, y, cell_color, cell_type):
         """
@@ -48,7 +48,7 @@ class Cell:
         self.cell_type = cell_type  # this is needed for future managing
         self.color = cell_color
         self.r = self.init_r
-        self.split_r = self.init_r
+        self.after_split_r = self.init_r
         self.direction = None  # will be a list of len 4 (up, right, down, left)
         self.velocity = self.init_velocity
         self.vision_distance = self.init_vision_distance
@@ -58,6 +58,8 @@ class Cell:
         self.heading_position = None
         self.heading_foodsource = None
         self.split_raduis = self.init_split_radius
+        self.mutating_parameter = None
+        self.direct_constant = self.init_direct_constant
 
     def move(self, position: tuple):
         """
@@ -66,6 +68,7 @@ class Cell:
         :param grid: grid which defines the bonds
         :param position: tuple (len = 2), with coordinates of the most preferable direction
         """
+        impulse = self.velocity
         self.direction = [self.direct_constant for _ in range(4)]
         if position[0] != self.x and position[1] != self.y:
             if position[0] >= self.x and position[1] >= self.y:
@@ -80,23 +83,37 @@ class Cell:
             else:
                 self.direction[2] = self.y - position[1]
                 self.direction[3] = self.x - position[0]
-        if self.x <= self.r + 2:
-            self.direction[3] = 0
-        elif self.x >= len(gc.grid) - (self.r + 2):
-            self.direction[1] = 0
-        if self.y <= self.r + 2:
-            self.direction[2] = 0
-        elif self.y >= len(gc.grid[0]) - (self.r + 2):
-            self.direction[0] = 0
 
-        final_direction = choices(self.direct_list, weights=self.direction)[0]
+        while impulse > 1:
+            if self.x <= self.r + 2:
+                self.direction[3] = 0
+            elif self.x >= len(gc.grid) - (self.r + 2):
+                self.direction[1] = 0
+            if self.y <= self.r + 2:
+                self.direction[2] = 0
+            elif self.y >= len(gc.grid[0]) - (self.r + 2):
+                self.direction[0] = 0
 
-        #gc.grid[self.x][self.y].remove(self)
+            final_direction = choices(self.direct_list, weights=self.direction)[0]
 
-        self.x += final_direction[0] * self.velocity
-        self.y += final_direction[1] * self.velocity
+            self.x += final_direction[0]
+            self.y += final_direction[1]
+            impulse -= 1
+        if impulse >= 0:
+            if bool(choices([0, 1], weights=[1 - impulse, impulse])[0]):
+                if self.x <= self.r + 2:
+                    self.direction[3] = 0
+                elif self.x >= len(gc.grid) - (self.r + 2):
+                    self.direction[1] = 0
+                if self.y <= self.r + 2:
+                    self.direction[2] = 0
+                elif self.y >= len(gc.grid[0]) - (self.r + 2):
+                    self.direction[0] = 0
 
-        #gc.grid[self.x][self.y].append(self)
+                final_direction = choices(self.direct_list, weights=self.direction)[0]
+
+                self.x += final_direction[0]
+                self.y += final_direction[1]
 
     #  Егор, пока что не реализцуй эту функцию,
     #  там надо прописать типы у всех типов, потому что это влияет на отпределение направления
@@ -165,14 +182,13 @@ class Cell:
                         heading_position[1] -= (cell.y - self.y)
                         cell_see_enemy = True
                 elif cell.r < self.r - 1:
-                    if close(cell, self, self.vision_distance):
-                        heading_position[0] += (cell.x - self.x)
-                        heading_position[1] += (cell.y - self.y)
+                    if close(cell, self, self.vision_distance - 5):
                         cell_see_pray = True
+                        pray = cell
         if cell_see_enemy and close(self, self.heading_foodsource, self.vision_distance):
             self.evaluate_foodsource(foodsources)
             heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
-        elif not cell_see_enemy:
+        elif (not cell_see_enemy) and (not cell_see_pray):
             many_food = self.count_food(food)
             if not cell_see_foodsource:
                 heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
@@ -181,6 +197,9 @@ class Cell:
                 heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
             elif many_food:
                 heading_position = self.get_food(food)
+        elif cell_see_pray and (not cell_see_enemy):
+            heading_position[0] += (pray.x - self.x)
+            heading_position[1] += (pray.y - self.y)
         return tuple(heading_position)
 
     def evaluate_foodsource(self, foodsources: list):
@@ -211,15 +230,42 @@ class Cell:
         return heading_position
 
     def split_cell(self, cells):
-        self.r = self.split_r
+        self.r = self.after_split_r
         daughter = Cell(self.x, self.y, self.color, self.cell_type)
         daughter.heading_foodsource = self.heading_foodsource
         cells.append(daughter)
+        daughter.mutate()
+
+    def mutate(self):
+        mutating_parameter = choices(self.mutating_parameters)[0]
+        if mutating_parameter == self.mutating_parameters[0]:
+            if self.after_split_r <= 2:
+                self.after_split_r += choices([0, 1])[0]
+            else:
+                self.after_split_r += choices([-1, 1])[0]
+        elif mutating_parameter == self.mutating_parameters[1]:
+            if self.velocity <= 1:
+                self.velocity += randint(1, 10) / 10
+            else:
+                self.velocity += randint(-10, 10) / 10
+        elif mutating_parameter == self.mutating_parameters[2]:
+            if self.vision_distance <= 10:
+                self.vision_distance += choices([0, 2])[0]
+            else:
+                self.vision_distance += choices([-2, 2])[0]
+        elif mutating_parameter == self.mutating_parameters[3]:
+            if self.split_raduis <= self.after_split_r:
+                self.split_raduis += choices([0, 1])[0]
+            else:
+                self.split_raduis += choices([-1, 1])[0]
+        elif mutating_parameter == self.mutating_parameter[4]:
+            if self.direct_constant <= 1:
+                self.direct_constant += randint(0, 1)
+            else:
+                self.direct_constant += choices([-1, 1])[0]
 
 
 
-    def mutate(self, mutate_probabilities):
-        pass
 
     def tick(self):
         """
@@ -238,7 +284,7 @@ class Cell:
             self.food_level += 1
         else:
             self.grow()
-        if self.r >= self.init_split_radius:
+        if self.r >= self.split_raduis:
             self.split_cell(cells)
 
 
