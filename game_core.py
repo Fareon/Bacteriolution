@@ -22,6 +22,8 @@ def born_self_cell(pos, color, cell_type):
 
     self_cells.append(new_cell)
     grid[pos[0]][pos[1]].append(new_cell)
+    
+    update_ui()
 
 def born_food_gen(pos):
     food_gen = unit.FoodSource(pos)
@@ -59,4 +61,7 @@ def update_ui():
     for cell in self_cells:
         if(cell.r > max_r): max_r = cell.r
     
-    ui.radius_text.set_text("Radius: " + str(max_r))
+    ui.radius.text = "Radius: " + str(max_r)
+    ui.population.text = "Population: " + str(len(self_cells))
+    
+    ui.generate_text()

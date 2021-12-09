@@ -11,23 +11,30 @@ class cell_icon:
 step = 40
 class mutate:
     w, h = +cell_icon.w, -step*6
-    x, y = cell_icon.x, cell_icon.y + 200
-    
+    x, y = cell_icon.x, cell_icon.y + 200    
+    text_surf = None
 class split:
     w, h = +cell_icon.w, -step*7.5
     x, y = cell_icon.x, mutate.y + step + 25
+    text_surf = None
 class radius:
-    x, y = (split.x - 50, split.y + 65)
+    x, y = (split.x - 75, split.y + 95)
     x2, y2 = (split.x + split.w + 50, split.y + split.h)
-    text = 'RADIUS'
+    text = 'RADIUS: 2'
     color = color.GRAY
+    text_surf = None
 class your_cell:
     x1, y1 = (10, -10)
     x2, y2 = (gm.ui_panel_width*0.9, gm.screen_height*0.2)
+    x, y = x1 + 35, y1 + 25
     text = 'YOUR CELL'
     color = color.GRAY
-
-    
+    text_surf = None
+class population:
+    x, y = (radius.x, radius.y + 35)
+    text = 'POPULATION: 0'
+    color = color.GRAY
+    text_surf = None
 
 
 manager = pygame_gui.UIManager((gm.screen_width, gm.screen_height), "UI/layout.json")
@@ -61,19 +68,20 @@ pg.font.Font('UI/Pixeboy-z8XGD.ttf', 80)
 bitfont = {80: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 80), 60: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 60),
            40: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 40)}
 
-text_surfaces = []
+text_elements = []
 def generate_text():
-    your_cell_text = bitfont[80].render(your_cell.text, False, your_cell.color)
-    text_surfaces.append(your_cell_text)
-    
-    radius_text = bitfont[80].render(radius.text, False, radius.color)
-    text_surfaces.append(radius_text)
-    
-    return text_surfaces
+    generate_sign(your_cell, size = 80)    
+    generate_sign(radius, size = 40)    
+    generate_sign(population, size = 40)
 
+def generate_sign(obj, size = 40):
+    obj.text_surf = bitfont[size].render(obj.text, False, obj.color)
+    text_elements.append(obj)
+
+generate_text()
 def draw_text(screen):
-    for text in generate_text():
-        screen.blit(text, (0, 0))
+    for text in text_elements:
+        if(text.text_surf is not None): screen.blit(text.text_surf, (text.x, text.y))
     
 #pygame_gui can't work with it!
 def set_text():

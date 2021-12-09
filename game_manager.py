@@ -22,7 +22,8 @@ scene_width = screen_width//zoom
 scene_height = screen_height//zoom
 ui_panel_width = screen_width // 3
 
-ui_click = False
+ui_click = 0
+click_delay = 10
 
 FPS = 200
 Game_FPS = 120

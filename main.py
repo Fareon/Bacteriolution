@@ -1,9 +1,7 @@
 import pygame as pg
 import pygame_gui
 import ui
-#import thorpy
 import time
-import numpy as np
 from color import color
 import scene
 import game_manager as gm
@@ -11,24 +9,20 @@ import game_core as gc
 from random import randint
 import tricky_functions as f
 
-# import map          RENAME MODULE map.py
-
-
 alive = True
 
 
 def handle_events(events):
     global alive
+    
     for event in events:
-        
         if event.type == pg.USEREVENT:
              if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                  if event.ui_element == ui.info_panel_button:
                      gm.ui_click = True
                      print('Iteracted with ui')
-                     
-                     
-        
+    
+    for event in events:                    
         ui.manager.process_events(event)
         if event.type == pg.QUIT:
             alive = False
@@ -40,16 +34,15 @@ def handle_events(events):
             keys = pg.key.get_pressed()
 
         if event.type == pg.MOUSEBUTTONDOWN:
-            gm.clickpos = pg.mouse.get_pos()
-            gm.last_clicked_camera_pos = gm.camera_pos
+            if(pg.mouse.get_pos()[0] > gm.ui_panel_width):
+                gm.clickpos = pg.mouse.get_pos()
+                gm.last_clicked_camera_pos = gm.camera_pos
             # print(gm.ScreenToScene(gm, gm.clickpos))
             if(event.button == 4):
                 gm.do_zoom(gm, +1)
             if (event.button == 5):
                 gm.do_zoom(gm, -1)
-                
-        gm.ui_click = False
-
+    gm.ui_click = False
 
 def main():
     pg.init()
