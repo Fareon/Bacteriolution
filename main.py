@@ -55,6 +55,7 @@ def main():
     pg.init()
     
     pg.display.set_caption('Bacteriolution')
+    pg.font.init()
 
     screen = pg.display.set_mode((gm.screen_width, gm.screen_height))
     borders_width = 2 #map visual borders
@@ -75,7 +76,7 @@ def main():
         gc.born_self_cell([x_born, y_born], color.PLAYER_COLOR, i)
         
     #COSTYL
-    ui.set_text()
+    #ui.set_text()
     while alive:
         handle_events(pg.event.get())
         
@@ -142,6 +143,8 @@ def main():
         
         ui.manager.update(1.0 / gm.Game_FPS)
         ui.manager.draw_ui(screen)
+        
+        ui.draw_text(screen)
         
         pg.display.update()
         time.sleep(1.0 / gm.Game_FPS)

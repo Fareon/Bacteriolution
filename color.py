@@ -15,3 +15,4 @@ class color:
     BLUE = (0, 0, 255)
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
+    GRAY = (150, 150, 150)
