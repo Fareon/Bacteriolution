@@ -30,9 +30,9 @@ class Cell:
     """
     init_r = 2
     direct_list = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    init_velocity = 1
+    init_velocity = 1.
     init_vision_distance = 20
-    game_object = 'food_gen'  # WTF?!
+    game_object = 'cell'
     init_split_radius = 6
     init_direct_constant = 2
     mutating_parameters = [init_r, init_velocity, init_vision_distance, init_split_radius, init_direct_constant]
@@ -111,9 +111,15 @@ class Cell:
                     self.direction[0] = 0
 
                 final_direction = choices(self.direct_list, weights=self.direction)[0]
-
+                cell_removed_from_grid = False
+                if(self in gc.grid[self.x][self.y]):
+                    gc.grid[self.x][self.y].remove(self)
+                    cell_removed_from_grid = True
                 self.x += final_direction[0]
                 self.y += final_direction[1]
+                if(cell_removed_from_grid):
+                    gc.grid[self.x][self.y].append(self)
+                
 
     #  Егор, пока что не реализцуй эту функцию,
     #  там надо прописать типы у всех типов, потому что это влияет на отпределение направления
@@ -234,6 +240,7 @@ class Cell:
         daughter = Cell(self.x, self.y, self.color, self.cell_type)
         daughter.heading_foodsource = self.heading_foodsource
         cells.append(daughter)
+        gc.grid[daughter.x][daughter.y].append(daughter)
         daughter.mutate()
         
         gc.update_ui()
