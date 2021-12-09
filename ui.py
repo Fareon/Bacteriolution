@@ -8,33 +8,52 @@ class cell_icon:
     w, h = 120, 90
     x, y = gm.ui_panel_width*0.21, gm.screen_height*0.175
    
-step = 40
+step = 45
 class mutate:
-    w, h = +cell_icon.w, -step*6
-    x, y = cell_icon.x, cell_icon.y + 200    
+    w, h = 50, -500
+    x, y = cell_icon.x + cell_icon.w*0.5, cell_icon.y + cell_icon.h + 130 
+    x1, x2 = 93, 200
+    y1, y2 = 310, 47
+    text = 'MUTATE'
+    color = color.UI2
     text_surf = None
 class split:
-    w, h = +cell_icon.w, -step*7.5
-    x, y = cell_icon.x, mutate.y + step + 25
+    w, h = mutate.w, mutate.h
+    x, y = mutate.x + 5, mutate.y + step
+    x1, x2 = mutate.x1, mutate.x2
+    y1, y2 = mutate.y1 + step + 0, mutate.y2 + step - 45
+    text = 'SPLIT'
+    color = color.UI2
     text_surf = None
 class radius:
-    x, y = (split.x - 75, split.y + 95)
+    x, y = (split.x - 120, split.y + 95)
     x2, y2 = (split.x + split.w + 50, split.y + split.h)
-    text = 'RADIUS: 2'
-    color = color.GRAY
+    text = 'MAX RADIUS: 2'
+    color = color.UI
     text_surf = None
 class your_cell:
     x1, y1 = (10, -10)
     x2, y2 = (gm.ui_panel_width*0.9, gm.screen_height*0.2)
     x, y = x1 + 35, y1 + 25
     text = 'YOUR CELL'
-    color = color.GRAY
+    color = color.UI
     text_surf = None
 class population:
     x, y = (radius.x, radius.y + 35)
     text = 'POPULATION: 0'
-    color = color.GRAY
+    color = color.UI
     text_surf = None
+class speed:
+    x, y = (gm.ui_panel_width*0.6, radius.y)
+    text = 'SPEED: 0'
+    color = color.UI
+    text_surf = None 
+class hunger:
+    x, y = (speed.x, population.y)
+    text = 'HUNGER: 0'
+    color = color.UI
+    text_surf = None 
+
 
 
 manager = pygame_gui.UIManager((gm.screen_width, gm.screen_height), "UI/layout.json")
@@ -42,39 +61,37 @@ manager = pygame_gui.UIManager((gm.screen_width, gm.screen_height), "UI/layout.j
 info_panel_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((-20, -20), (gm.ui_panel_width, gm.screen_height*1.2)),
                                                  text='', object_id=f"#info_panel",
                                                  manager=manager)
-#your_cell_text = pygame_gui.elements.UIButton(relative_rect=pg.Rect((your_cell.x1, your_cell.y1), (your_cell.x2, your_cell.y2)),
-#                                                 text ='', object_id=f"#label", 
-#                                                 parent_element = info_panel_button,
-#                                                 manager=manager)
 cell_icon_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((cell_icon.x, cell_icon.y), (cell_icon.x + cell_icon.w, cell_icon.y + cell_icon.h)),
                                                  text='', object_id=f"#cell_icon",
                                                  parent_element = info_panel_button,
                                                  manager=manager)
-mutate_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((mutate.x, mutate.y), (mutate.x + mutate.w, mutate.y + mutate.h)),
+mutate_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((mutate.x1, mutate.y1),
+                                                                   (mutate.x2, mutate.y2)),
                                                  text='', object_id=f"#mutate",
                                                  parent_element = info_panel_button,
                                                  manager=manager)
-split_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((split.x, split.y), (split.x + split.w, split.y + split.h)),
+split_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((split.x1, split.y1), 
+                                                                  (split.x2, split.y2)),
                                                  text='', object_id=f"#mutate",
                                                  parent_element = info_panel_button,
                                                  manager=manager)
-
-#radius_text = pygame_gui.elements.UIButton(relative_rect=pg.Rect((radius.x, radius.y), (radius.x2, radius.y2)),
-#                                                 text='', object_id=f"#label2",
-#                                                 parent_element = info_panel_button,
-#                                                 manager=manager)
 pg.font.init()
 pg.font.Font('UI/Pixeboy-z8XGD.ttf', 80)
 bitfont = {80: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 80), 60: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 60),
-           40: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 40)}
+           40: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 40), 30: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 30)}
 
 text_elements = []
 def generate_text():
     generate_sign(your_cell, size = 80)    
-    generate_sign(radius, size = 40)    
-    generate_sign(population, size = 40)
+    generate_sign(radius, size = 30)    
+    generate_sign(population, size = 30)
+    generate_sign(hunger, size = 30)
+    generate_sign(speed, size = 30)
+    
+    generate_sign(mutate, size = 30)
+    generate_sign(split, size = 30)
 
-def generate_sign(obj, size = 40):
+def generate_sign(obj, size = 30):
     obj.text_surf = bitfont[size].render(obj.text, False, obj.color)
     text_elements.append(obj)
 
@@ -84,11 +101,11 @@ def draw_text(screen):
         if(text.text_surf is not None): screen.blit(text.text_surf, (text.x, text.y))
     
 #pygame_gui can't work with it!
-def set_text():
+'''def set_text():
     your_cell_text.set_text('YOUR CELL')
     mutate_button.set_text('MUTATE')
     split_button.set_text('SPLIT')
-    radius_text.set_text('REACH FOOD')
+    radius_text.set_text('REACH FOOD')'''
 
 if __name__ == "__main__":
     exec(open("main.py").read())

@@ -32,5 +32,5 @@ dt = 0.01
 
 camera_pos = np.array([scene_width/2, scene_height/2])
 last_clicked_camera_pos = camera_pos
-camera_speed = 50       #vector magnitude
+camera_speed = 50 * 1.5       #vector magnitude
 zoom_speed = 3

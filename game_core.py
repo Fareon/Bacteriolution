@@ -61,7 +61,9 @@ def update_ui():
     for cell in self_cells:
         if(cell.r > max_r): max_r = cell.r
     
-    ui.radius.text = "Radius: " + str(max_r)
+    ui.radius.text = "MAX RADIUS: " + str(max_r)
     ui.population.text = "Population: " + str(len(self_cells))
+    ui.hunger.text = "HUNGER: " + str(self_cells[0].food_level)
+    ui.speed.text = "SPEED: " + str(round(self_cells[0].velocity, 1) )
     
     ui.generate_text()

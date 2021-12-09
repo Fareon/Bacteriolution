@@ -235,6 +235,9 @@ class Cell:
         daughter.heading_foodsource = self.heading_foodsource
         cells.append(daughter)
         daughter.mutate()
+        
+        gc.update_ui()
+        
 
     def mutate(self):
         mutating_parameter = choices(self.mutating_parameters)[0]
