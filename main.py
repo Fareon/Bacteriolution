@@ -64,7 +64,7 @@ def main():
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_food_gen((x_born, y_born))
 
-    for i in range(1, 25):
+    for i in range(2, 4):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_cell([x_born, y_born], color.random(), i)
@@ -108,10 +108,10 @@ def main():
                 if gm.clickpos is not None:
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
                     cell.move(move_to)
-                gc.eat_food(cell)
+                gc.eat_food(cell, gc.self_cells)
             for cell in gc.cells:
                 cell.move(cell.think_ahead(gc.cells+gc.self_cells, gc.food_generators, gc.food))
-                gc.eat_food(cell)
+                gc.eat_food(cell, gc.cells)
 
             for food_gen in gc.food_generators:
                 if f.chance(food_gen.rate):

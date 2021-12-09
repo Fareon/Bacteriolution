@@ -42,13 +42,13 @@ def check_for_food(point, radius):
             answer.append(obj)
     return answer
 
-def eat_food(cell):
+def eat_food(cell, list_of_cells):
     x, y = cell.x, cell.y
     all_food = check_for_food((x, y), cell.r)
     for food_eaten in all_food:
         grid[food_eaten.x][food_eaten.y].remove(food_eaten)
         food.remove(food_eaten)
-        cell.eat()
+        cell.eat(list_of_cells)
         if(cell.color == color.PLAYER_COLOR):
             update_ui()
 

@@ -34,6 +34,8 @@ class Cell:
     init_velocity = 1
     init_vision_distance = 20
     game_object = 'food_gen'
+    init_split_radius = 6
+    direct_constant = 2
 
     def __init__(self, x, y, cell_color, cell_type):
         """
@@ -46,6 +48,7 @@ class Cell:
         self.cell_type = cell_type  # this is needed for future managing
         self.color = cell_color
         self.r = self.init_r
+        self.split_r = self.init_r
         self.direction = None  # will be a list of len 4 (up, right, down, left)
         self.velocity = self.init_velocity
         self.vision_distance = self.init_vision_distance
@@ -54,6 +57,7 @@ class Cell:
         self.food_level = 1
         self.heading_position = None
         self.heading_foodsource = None
+        self.split_raduis = self.init_split_radius
 
     def move(self, position: tuple):
         """
@@ -62,7 +66,7 @@ class Cell:
         :param grid: grid which defines the bonds
         :param position: tuple (len = 2), with coordinates of the most preferable direction
         """
-        self.direction = [1 for _ in range(4)]  # FIXME: has to be normalized according to the coordinates
+        self.direction = [self.direct_constant for _ in range(4)]
         if position[0] != self.x and position[1] != self.y:
             if position[0] >= self.x and position[1] >= self.y:
                 self.direction[0] = position[1] - self.y
@@ -87,12 +91,12 @@ class Cell:
 
         final_direction = choices(self.direct_list, weights=self.direction)[0]
 
-        gc.grid[self.x][self.y].remove(self)
+        #gc.grid[self.x][self.y].remove(self)
 
         self.x += final_direction[0] * self.velocity
         self.y += final_direction[1] * self.velocity
 
-        gc.grid[self.x][self.y].append(self)
+        #gc.grid[self.x][self.y].append(self)
 
     #  Егор, пока что не реализцуй эту функцию,
     #  там надо прописать типы у всех типов, потому что это влияет на отпределение направления
@@ -199,11 +203,19 @@ class Cell:
             return False
 
     def get_food(self, food):
+        heading_position = None
         for foodie in food:
             if close(self, foodie, self.vision_distance):
                 heading_position = [foodie.x, foodie.y]
                 pass
         return heading_position
+
+    def split_cell(self, cells):
+        self.r = self.split_r
+        daughter = Cell(self.x, self.y, self.color, self.cell_type)
+        daughter.heading_foodsource = self.heading_foodsource
+        cells.append(daughter)
+
 
 
     def mutate(self, mutate_probabilities):
@@ -221,11 +233,13 @@ class Cell:
         self.food_level = 1
         self.r += 1
 
-    def eat(self):
+    def eat(self, cells):
         if self.food_level <= self.r ** 2:
             self.food_level += 1
         else:
             self.grow()
+        if self.r >= self.init_split_radius:
+            self.split_cell(cells)
 
 
 class FoodSource:
@@ -239,7 +253,7 @@ class FoodSource:
         self.x = position[0]
         self.y = position[1]
         self.r = 2
-        self.range = 100
+        self.range = 50
         self.rate = 0.03  # chance to generate food current frame
         self.color = color.GREEN
 
