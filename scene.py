@@ -153,6 +153,7 @@ def show_defeat_screen(screen, screen_size):
     screen.blit(surface, (0, 0))
     screen.blit(text, pos)
 
+
 def show_victory_screen(screen, screen_size):
     '''
     function, that show victory screen
