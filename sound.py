@@ -3,7 +3,7 @@ import pygame as pg
 pg.init()
 pg.mixer.music.load('sounds/background_music.wav')
 eat_food_sound = pg.mixer.Sound('sounds/eat_food_sound.wav')
-eat_cell_sound = pg.mixer.Sound('sounds/eat_cell_sound.wav.ogg')
+eat_cell_sound = pg.mixer.Sound('sounds/eat_cell_sound.wav')
 
 def play_background_music():
     pg.mixer.music.play(-1)
