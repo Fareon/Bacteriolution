@@ -4,6 +4,7 @@ import ui
 import time
 from color import color
 import scene
+import sound
 import game_manager as gm
 import game_core as gc
 from random import randint
@@ -145,4 +146,5 @@ def main():
 
 
 if __name__ == "__main__":
+    sound.play_background_music()
     main()

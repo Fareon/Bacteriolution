@@ -66,8 +66,8 @@ def eat_food(cell, list_of_cells):
         if(cell.r > food_eaten.r):
             
             print('eaten cell')
-            
-            grid[food_eaten.x][food_eaten.y].remove(food_eaten)
+            if food_eaten in grid[food_eaten.x][food_eaten.y]:
+                grid[food_eaten.x][food_eaten.y].remove(food_eaten)
             if(food_eaten in cells): cells.remove(food_eaten)
             if(food_eaten in self_cells): self_cells.remove(food_eaten)
             cell.eat(list_of_cells)
