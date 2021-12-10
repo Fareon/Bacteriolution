@@ -112,12 +112,12 @@ class Cell:
 
                 final_direction = choices(self.direct_list, weights=self.direction)[0]
                 cell_removed_from_grid = False
-                if(self in gc.grid[self.x][self.y]):
+                if self in gc.grid[self.x][self.y]:
                     gc.grid[self.x][self.y].remove(self)
                     cell_removed_from_grid = True
                 self.x += final_direction[0]
                 self.y += final_direction[1]
-                if(cell_removed_from_grid):
+                if cell_removed_from_grid:
                     gc.grid[self.x][self.y].append(self)
                 
 
@@ -176,7 +176,8 @@ class Cell:
         return tuple(heading_position)
 
     def think_ahead(self, cells, foodsources, food):
-        cell_see_foodsource = close(self, self.heading_foodsource, self.vision_distance // 3)
+        cell_see_foodsource_close = close(self, self.heading_foodsource, self.vision_distance // 3)
+        cell_see_foodsource_far = close(self, self.heading_foodsource, self.vision_distance + 5)
         heading_position = [self.x, self.y]
         cell_see_pray = False
         cell_see_enemy = False
@@ -191,12 +192,12 @@ class Cell:
                     if close(cell, self, self.vision_distance - 5):
                         cell_see_pray = True
                         pray = cell
-        if cell_see_enemy and close(self, self.heading_foodsource, self.vision_distance):
+        if cell_see_enemy and cell_see_foodsource_far:
             self.evaluate_foodsource(foodsources)
             heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
         elif (not cell_see_enemy) and (not cell_see_pray):
             many_food = self.count_food(food)
-            if not cell_see_foodsource:
+            if not cell_see_foodsource_far:
                 heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
             elif not many_food:
                 self.evaluate_foodsource(foodsources)
@@ -220,7 +221,7 @@ class Cell:
     def count_food(self, food):
         count = 0
         for foodie in food:
-            if close(self, foodie, self.vision_distance):
+            if close(self, foodie, self.vision_distance + 10):
                 count += 1
         if count >= 5:
             return True
@@ -230,7 +231,7 @@ class Cell:
     def get_food(self, food):
         heading_position = None
         for foodie in food:
-            if close(self, foodie, self.vision_distance):
+            if close(self, foodie, self.vision_distance + 10):
                 heading_position = [foodie.x, foodie.y]
                 pass
         return heading_position
