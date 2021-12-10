@@ -1,6 +1,7 @@
 import numpy as np
 import play_units as unit
 import game_manager as gm
+import tricky_functions as f
 import sound
 import ui
 from color import color
@@ -17,6 +18,14 @@ def born_cell(pos, color, cell_type):
     new_cell.evaluate_foodsource(food_generators)
     cells.append(new_cell)
     grid[pos[0]][pos[1]].append(new_cell)
+
+def debug_grid():
+    total_cells = 0
+    for y in range(gm.scene_height):
+        for x in range(gm.scene_width):
+            for obj in grid[x][y]:
+                if(obj.game_object == 'cell'): total_cells += 1
+    print(total_cells)
 
 def born_self_cell(pos, color, cell_type):
     new_cell = unit.Cell(pos[0], pos[1], color, cell_type)
@@ -36,8 +45,8 @@ def check_for_grid(cell):
     radius = cell.r
     content = []
 
-    for x_check in range(x - radius, x + radius + 1, 1):
-        for y_check in range(y - radius, y + radius + 1, 1):
+    for x_check in range(f.clamp(x - radius, 1, gm.scene_width-2), f.clamp(x + radius + 1, 1, gm.scene_width-2), 1):
+        for y_check in range(f.clamp(y - radius, 1, gm.scene_width-2), f.clamp(y + radius + 1, 1, gm.scene_width-2), 1):
             content += grid[x_check][y_check]
     
     keys = ['food', 'cell', 'food_gen']
@@ -68,27 +77,39 @@ def eat_food(cell, list_of_cells):
         if(cell.r > food_eaten.r):
             
             print('eaten cell')
-            grid[food_eaten.x][food_eaten.y].remove(food_eaten)
-            if(food_eaten in cells): cells.remove(food_eaten)
-            if(food_eaten in self_cells): self_cells.remove(food_eaten)
+            #if(food_eaten in grid[food_eaten.x][food_eaten.y]): 
+            try:
+                grid[food_eaten.x][food_eaten.y].remove(food_eaten)
+            except:
+                #delete_ghost_cells()
+                debug_grid()
+                print(len(cells) + len(self_cells))
+                print(grid[food_eaten.x][food_eaten.y])
+            if(food_eaten in cells): 
+                cells.remove(food_eaten)
+            if(food_eaten in self_cells): 
+                self_cells.remove(food_eaten)
+            
             cell.eat(list_of_cells)
             if(cell.color == color.PLAYER_COLOR and food_eaten == all_food['cell'][-1]):
                 sound.eat_cell_sound.play()
                 update_ui()
-                
-            print('Cells: ',len(cells))
-            print('Player cells: ',len(self_cells))
+
+def delete_ghost_cells():
+    for cell in cells:
+        if(not (cell in grid[cell.x][cell.y])):
+            cells.remove(cell)
 
 def update_ui():
     #define maximum radius among self_cells
-    
-    max_r = 0
-    for cell in self_cells:
-        if(cell.r > max_r): max_r = cell.r
-    
-    ui.radius.text = "MAX RADIUS: " + str(max_r)
-    ui.population.text = "Population: " + str(len(self_cells))
-    ui.hunger.text = "HUNGER: " + str(self_cells[0].food_level)
-    ui.speed.text = "SPEED: " + str(round(self_cells[0].velocity, 2) )
-    
-    ui.generate_text()
+    if(len(self_cells) > 0):        
+        max_r = 0
+        for cell in self_cells:
+            if(cell.r > max_r): max_r = cell.r
+        
+        ui.radius.text = "MAX RADIUS: " + str(max_r)
+        ui.population.text = "Population: " + str(len(self_cells))
+        ui.hunger.text = "HUNGER: " + str(self_cells[0].food_level)
+        ui.speed.text = "SPEED: " + str(round(self_cells[0].velocity, 2) )
+        
+        ui.generate_text()

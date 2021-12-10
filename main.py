@@ -31,6 +31,10 @@ def handle_events(events):
             if event.key == pg.K_ESCAPE:
                 alive = False
                 print('Exited game')
+            '''if event.key == pg.K_x:
+                print('cells:', len(gc.cells))
+                print('Self_cells:', len(gc.self_cells))
+                gc.debug_grid()'''
 
             keys = pg.key.get_pressed()
 
@@ -54,17 +58,17 @@ def main():
     screen = pg.display.set_mode((gm.screen_width, gm.screen_height))
     borders_width = 2 #map visual borders
     
-    for i in range(7):
+    for i in range(9):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_food_gen((x_born, y_born))
 
-    for i in range(2, 5):
+    for i in range(10):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_cell([x_born, y_born], color.random(), i)
 
-    for i in range(1):
+    for i in range(2):
         x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
         y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
         gc.born_self_cell([x_born, y_born], color.PLAYER_COLOR, i)
@@ -100,13 +104,14 @@ def main():
         if gm.frame % (gm.FPS // gm.Game_FPS) == 0:
             #any gamecore events happen here
             for cell in gc.self_cells:
+                gc.eat_food(cell, gc.self_cells)
                 if gm.clickpos is not None:
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
-                    cell.move(move_to)
-                gc.eat_food(cell, gc.self_cells)
+                    cell.move(move_to)                
             for cell in gc.cells:
-                cell.move(cell.think_ahead(gc.cells+gc.self_cells, gc.food_generators, gc.food))
                 gc.eat_food(cell, gc.cells)
+                cell.move(cell.think_ahead(gc.cells+gc.self_cells, gc.food_generators, gc.food))
+                
 
             for food_gen in gc.food_generators:
                 if f.chance(food_gen.rate):

@@ -81,6 +81,8 @@ class Cell:
         :param grid: grid which defines the bonds
         :param position: tuple (len = 2), with coordinates of the most preferable direction
         """
+        gc.grid[self.x][self.y].remove(self)
+        
         impulse = self.velocity
         self.direction = [self.direct_constant for _ in range(4)]
         if position[0] != self.x and position[1] != self.y:
@@ -124,14 +126,13 @@ class Cell:
                     self.direction[0] = 0
 
                 final_direction = choices(self.direct_list, weights=self.direction)[0]
-                cell_removed_from_grid = False
-                if self in gc.grid[self.x][self.y]:
-                    gc.grid[self.x][self.y].remove(self)
-                    cell_removed_from_grid = True
+                
+                
+
                 self.x += final_direction[0]
                 self.y += final_direction[1]
-                if cell_removed_from_grid:
-                    gc.grid[self.x][self.y].append(self)
+                
+        gc.grid[self.x][self.y].append(self)
                 
 
     #  Егор, пока что не реализцуй эту функцию,
@@ -255,9 +256,10 @@ class Cell:
                         vision_distance=self.vision_distance, split_radius=self.split_raduis,
                         after_split_r=self.after_split_r)
         daughter.heading_foodsource = self.heading_foodsource
+        daughter.mutate()
+        
         cells.append(daughter)
         gc.grid[daughter.x][daughter.y].append(daughter)
-        daughter.mutate()
         
         gc.update_ui()
 
