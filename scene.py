@@ -1,7 +1,9 @@
 import pygame as pg
+
 global SQARE_OUTLINE_COLOR, SQARE_OUTLINE_WIDTH
 SQARE_OUTLINE_COLOR = (57, 57, 57)
 SQARE_OUTLINE_WIDTH = 1
+
 
 def draw_background(screen, background_color):
     '''
@@ -28,7 +30,7 @@ def draw_borders(screen, screen_size, zoom, gamefield_size, borders_color, borde
     x0 = -camera_pos[0] + screen_size[0] / (2 * zoom) - borders_width
     y0 = camera_pos[1] + screen_size[1] / (2 * zoom) - borders_width - gamefield_size[1]
     borders_width_in_real_pixels = borders_width * pixel_size
-    if(borders_width_in_real_pixels < 1):
+    if (borders_width_in_real_pixels < 1):
         borders_width_in_real_pixels = 1
     # draw up border
     pg.draw.rect(screen, borders_color,
@@ -85,7 +87,8 @@ def sqare_objects_display(screen, pixel_size, scene_objects):
         pg.draw.rect(screen, color,
                      ((x - r) * pixel_size, (y - r) * pixel_size, 2 * r * pixel_size, 2 * r * pixel_size))
         pg.draw.rect(screen, SQARE_OUTLINE_COLOR,
-                     ((x - r) * pixel_size, (y - r) * pixel_size, 2 * r * pixel_size, 2 * r * pixel_size), SQARE_OUTLINE_WIDTH)
+                     ((x - r) * pixel_size, (y - r) * pixel_size, 2 * r * pixel_size, 2 * r * pixel_size),
+                     SQARE_OUTLINE_WIDTH)
 
 
 def cross_objects_display(screen, pixel_size, scene_objects):
@@ -134,3 +137,32 @@ def draw_cross_objects(screen, objects, camera_pos, screen_size, zoom):
     pixel_size = zoom
     scene_cells = choose_objects_for_drawing(objects, camera_pos, screen_size, zoom)
     cross_objects_display(screen, pixel_size, scene_cells)
+
+
+def show_defeat_screen(screen, screen_size):
+    '''
+    function, that show defeat screen
+    :param screen:
+    :param screen_size: [screen_with, screen_height]
+    '''
+    surface = pg.Surface((screen_size[0], screen_size[1]), pg.SRCALPHA)
+    pg.draw.rect(surface, (0, 0, 0, 220), (0, 0, screen_size[0], screen_size[1]))
+    font = pg.font.Font("Font/HyperStiffRoundBootiedOpossumRegular.ttf", 70)
+    text = font.render("DEFEAT", 0, (255, 0, 0))
+    pos = text.get_rect(center=(screen_size[0] / 2, screen_size[1] / 2))
+    screen.blit(surface, (0, 0))
+    screen.blit(text, pos)
+
+def show_victory_screen(screen, screen_size):
+    '''
+    function, that show victory screen
+    :param screen:
+    :param screen_size: [screen_with, screen_height]
+    '''
+    surface = pg.Surface((screen_size[0], screen_size[1]), pg.SRCALPHA)
+    pg.draw.rect(surface, (0, 0, 0, 220), (0, 0, screen_size[0], screen_size[1]))
+    font = pg.font.Font("Font/HyperStiffRoundBootiedOpossumRegular.ttf", 70)
+    text = font.render("VICTORY", 0, (0, 255, 0))
+    pos = text.get_rect(center=(screen_size[0] / 2, screen_size[1] / 2))
+    screen.blit(surface, (0, 0))
+    screen.blit(text, pos)
