@@ -196,7 +196,7 @@ class Cell:
         cell_see_enemy = False
         for cell in cells:
             if cell.cell_type != self.cell_type:
-                if cell.r > self.r + 1:
+                if cell.r > self.r:
                     if close(cell, self, self.vision_distance):
                         heading_position[0] -= (cell.x - self.x)
                         heading_position[1] -= (cell.y - self.y)
@@ -260,7 +260,6 @@ class Cell:
         daughter.mutate()
         
         gc.update_ui()
-        
 
     def mutate(self):
         mutating_parameter = choices(self.mutating_parameters, weights=[3, 3, 1, 3, 2])[0]
@@ -289,9 +288,6 @@ class Cell:
                 self.direct_constant += randint(0, 1)
             else:
                 self.direct_constant += choices([-1, 1])[0]
-
-
-
 
     def tick(self):
         """
