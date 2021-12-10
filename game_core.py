@@ -1,6 +1,7 @@
 import numpy as np
 import play_units as unit
 import game_manager as gm
+import sound
 import ui
 from color import color
 
@@ -60,6 +61,7 @@ def eat_food(cell, list_of_cells):
         food.remove(food_eaten)
         cell.eat(list_of_cells)
         if(cell.color == color.PLAYER_COLOR and food_eaten == all_food['food'][-1]):
+            sound.play_eat_food_sound()
             update_ui()
             
     for food_eaten in all_food['cell']:
@@ -71,6 +73,7 @@ def eat_food(cell, list_of_cells):
             if(food_eaten in self_cells): self_cells.remove(food_eaten)
             cell.eat(list_of_cells)
             if(cell.color == color.PLAYER_COLOR and food_eaten == all_food['cell'][-1]):
+                sound.eat_cell_sound.play()
                 update_ui()
                 
             print('Cells: ',len(cells))
