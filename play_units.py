@@ -37,7 +37,8 @@ class Cell:
     init_direct_constant = 2
     mutating_parameters = [init_r, init_velocity, init_vision_distance, init_split_radius, init_direct_constant]
 
-    def __init__(self, x, y, cell_color, cell_type):
+    def __init__(self, x, y, cell_color, cell_type, velocity=None, vision_distance=None, split_radius=None,
+                 after_split_r=None):
         """
         :param x: horizontal position on the grid.py
         :param y: vertical position on the grid.py
@@ -48,16 +49,28 @@ class Cell:
         self.cell_type = cell_type  # this is needed for future managing
         self.color = cell_color
         self.r = self.init_r
-        self.after_split_r = self.init_r
+        if after_split_r is None:
+            self.after_split_r = self.init_r
+        else:
+            self.after_split_r = after_split_r
         self.direction = None  # will be a list of len 4 (up, right, down, left)
-        self.velocity = self.init_velocity
-        self.vision_distance = self.init_vision_distance
+        if velocity is None:
+            self.velocity = self.init_velocity
+        else:
+            self.velocity = velocity
+        if vision_distance is None:
+            self.vision_distance = self.init_vision_distance
+        else:
+            self.vision_distance=vision_distance
         self.energy = None  # In future will stand for hunger
         self.life = None  # In future will stand for how ling the cell is going to live
         self.food_level = 1
         self.heading_position = None
         self.heading_foodsource = None
-        self.split_raduis = self.init_split_radius
+        if split_radius is None:
+            self.split_raduis = self.init_split_radius
+        else:
+            self.split_raduis = split_radius
         self.mutating_parameter = None
         self.direct_constant = self.init_direct_constant
 
