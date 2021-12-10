@@ -251,7 +251,9 @@ class Cell:
 
     def split_cell(self, cells):
         self.r = self.after_split_r
-        daughter = Cell(self.x, self.y, self.color, self.cell_type)
+        daughter = Cell(self.x, self.y, self.color, self.cell_type, velocity=self.velocity,
+                        vision_distance=self.vision_distance, split_radius=self.split_raduis,
+                        after_split_r=self.after_split_r)
         daughter.heading_foodsource = self.heading_foodsource
         cells.append(daughter)
         gc.grid[daughter.x][daughter.y].append(daughter)
@@ -261,12 +263,12 @@ class Cell:
         
 
     def mutate(self):
-        mutating_parameter = choices(self.mutating_parameters)[0]
+        mutating_parameter = choices(self.mutating_parameters, weights=[3, 3, 1, 3, 2])[0]
         if mutating_parameter == self.mutating_parameters[0]:
             if self.after_split_r <= 2:
-                self.after_split_r += choices([0, 1])[0]
+                self.after_split_r += choices([0, 1], weights=[1, 3])[0]
             else:
-                self.after_split_r += choices([-1, 1])[0]
+                self.after_split_r += choices([-1, 1], weights=[1, 3])[0]
         elif mutating_parameter == self.mutating_parameters[1]:
             if self.velocity <= 1:
                 self.velocity += randint(1, 10) / 10
@@ -274,14 +276,14 @@ class Cell:
                 self.velocity += randint(-10, 10) / 10
         elif mutating_parameter == self.mutating_parameters[2]:
             if self.vision_distance <= 10:
-                self.vision_distance += choices([0, 2])[0]
+                self.vision_distance += choices([0, 2], weights=[1, 2])[0]
             else:
-                self.vision_distance += choices([-2, 2])[0]
+                self.vision_distance += choices([-2, 2], weights=[1, 2])[0]
         elif mutating_parameter == self.mutating_parameters[3]:
             if self.split_raduis <= self.after_split_r:
-                self.split_raduis += choices([0, 1])[0]
+                self.split_raduis += choices([0, 1], weights=[1, 3])[0]
             else:
-                self.split_raduis += choices([-1, 1])[0]
+                self.split_raduis += choices([-1, 1], weights=[1, 3])[0]
         elif mutating_parameter == self.mutating_parameter[4]:
             if self.direct_constant <= 1:
                 self.direct_constant += randint(0, 1)
