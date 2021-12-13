@@ -27,7 +27,7 @@ ui_click = 0
 click_delay = 10
 
 FPS = 200
-Game_FPS = 120
+Game_FPS = 60
 frame = 0
 dt = 0.01
 

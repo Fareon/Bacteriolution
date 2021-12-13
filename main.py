@@ -79,7 +79,10 @@ def main():
     while alive:
         handle_events(pg.event.get())
         
-        
+        if(ui.game_speed_scrbar.check_has_moved_recently()):
+            gm.Game_FPS = 50 + ui.game_speed_scrbar.scroll_position/98 * 65    #bad code
+            
+            print(ui.game_speed_scrbar.scroll_position)
         
         #DETECT INPUT
         keys_pressed = pg.key.get_pressed()

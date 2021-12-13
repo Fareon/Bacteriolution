@@ -17,17 +17,25 @@ class mutate:
     text = 'MUTATE'
     color = color.UI2
     text_surf = None
-class split:
+class gamespeed_text:
     w, h = mutate.w, mutate.h
+    x, y = mutate.x + 5, mutate.y + step
+    x1, x2 = mutate.x1 - 100, mutate.x2
+    y1, y2 = mutate.y1 + step + 0, mutate.y2 + step - 45
+    text = 'Game Speed'
+    color = color.UI2
+    text_surf = None
+class scrollbar:
+    w, h = mutate.w, mutate.h/2
     x, y = mutate.x + 5, mutate.y + step
     x1, x2 = mutate.x1, mutate.x2
     y1, y2 = mutate.y1 + step + 0, mutate.y2 + step - 45
-    text = 'SPLIT'
+    text = 'gamespeed_text'
     color = color.UI2
     text_surf = None
 class radius:
-    x, y = (split.x - 120, split.y + 95)
-    x2, y2 = (split.x + split.w + 50, split.y + split.h)
+    x, y = (gamespeed_text.x - 120, gamespeed_text.y + 95)
+    x2, y2 = (gamespeed_text.x + gamespeed_text.w + 50, gamespeed_text.y + gamespeed_text.h)
     text = 'MAX RADIUS: 2'
     color = color.UI
     text_surf = None
@@ -70,14 +78,21 @@ mutate_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((mutate.x1, m
                                                  text='', object_id=f"#mutate",
                                                  parent_element = info_panel_button,
                                                  manager=manager)
-split_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((split.x1, split.y1), 
-                                                                  (split.x2, split.y2)),
+'''gamespeed_text_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((gamespeed_text.x1, gamespeed_text.y1), 
+                                                                  (gamespeed_text.x2, gamespeed_text.y2)),
                                                  text='', object_id=f"#mutate",
                                                  parent_element = info_panel_button,
+                                                 manager=manager)'''
+
+game_speed_scrbar = pygame_gui.elements.UIHorizontalScrollBar(relative_rect=pg.Rect((scrollbar.x1, scrollbar.y1), 
+                                                                  (scrollbar.x2, scrollbar.y2)),
+                                                 visible_percentage  = 0.3, object_id=f"#scroll_bar",
+                                                 parent_element = info_panel_button,
                                                  manager=manager)
+
 pg.font.init()
 pg.font.Font('UI/Pixeboy-z8XGD.ttf', 80)
-bitfont = {80: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 80), 60: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 60),
+bitfont = {80: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 80), 20: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 20),
            40: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 40), 30: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 30)}
 
 text_elements = []
@@ -89,7 +104,7 @@ def generate_text():
     generate_sign(speed, size = 30)
     
     generate_sign(mutate, size = 30)
-    generate_sign(split, size = 30)
+    generate_sign(gamespeed_text, size = 20)
 
 def generate_sign(obj, size = 30):
     obj.text_surf = bitfont[size].render(obj.text, False, obj.color)
@@ -104,7 +119,7 @@ def draw_text(screen):
 '''def set_text():
     your_cell_text.set_text('YOUR CELL')
     mutate_button.set_text('MUTATE')
-    split_button.set_text('SPLIT')
+    gamespeed_text_button.set_text('gamespeed_text')
     radius_text.set_text('REACH FOOD')'''
 
 if __name__ == "__main__":
