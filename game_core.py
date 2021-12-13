@@ -95,6 +95,34 @@ def eat_food(cell, list_of_cells):
                 sound.eat_cell_sound.play()
                 update_ui()
 
+def initialize_gameobjects():
+    global cells, self_cells, food_generators, food, grid
+    cells = []
+    self_cells = []
+    food_generators = []
+    food = []
+    grid = [[ [] for _ in range(gm.scene_height)] for __ in range(gm.scene_width)]
+
+from random import randint
+def generate_level(food_gens = 9, cells = 10, self_cells = 2):
+    
+    initialize_gameobjects()
+    
+    for i in range(food_gens):
+        x_born = randint(3*gm.borders_width, gm.scene_width - 3*gm.borders_width)
+        y_born = randint(3*gm.borders_width, gm.scene_height - 3*gm.borders_width)
+        born_food_gen((x_born, y_born))
+
+    for i in range(cells):
+        x_born = randint(3*gm.borders_width, gm.scene_width - 3*gm.borders_width)
+        y_born = randint(3*gm.borders_width, gm.scene_height - 3*gm.borders_width)
+        born_cell([x_born, y_born], color.random(), i)
+
+    for i in range(self_cells):
+        x_born = randint(3*gm.borders_width, gm.scene_width - 3*gm.borders_width)
+        y_born = randint(3*gm.borders_width, gm.scene_height - 3*gm.borders_width)
+        born_self_cell([x_born, y_born], color.PLAYER_COLOR, i)
+
 def delete_ghost_cells():
     for cell in cells:
         if(not (cell in grid[cell.x][cell.y])):

@@ -13,3 +13,7 @@ def play_eat_food_sound():
 
 def play_eat_cell_sound():
     eat_cell_sound.play()
+    
+def shut_down_music():
+    pg.mixer.music.pause()
+    eat_food_sound.set_volume(0)

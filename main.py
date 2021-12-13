@@ -7,10 +7,10 @@ import scene
 import sound
 import game_manager as gm
 import game_core as gc
-from random import randint
 import tricky_functions as f
 
 alive = True
+playing = True
 
 
 def handle_events(events):
@@ -29,7 +29,8 @@ def handle_events(events):
             alive = False
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
-                alive = False
+                sound.shut_down_music()
+                alive = False                
                 print('Exited game')
             '''if event.key == pg.K_x:
                 print('cells:', len(gc.cells))
@@ -39,6 +40,11 @@ def handle_events(events):
             keys = pg.key.get_pressed()
 
         if event.type == pg.MOUSEBUTTONDOWN:
+            global playing
+            if(playing == False):
+                playing = True
+                gc.generate_level(food_gens = 9, cells = 10, self_cells = 2)   
+            
             if(pg.mouse.get_pos()[0] > gm.ui_panel_width):
                 gm.clickpos = pg.mouse.get_pos()
                 gm.last_clicked_camera_pos = gm.camera_pos
@@ -49,6 +55,17 @@ def handle_events(events):
                 gm.do_zoom(gm, -1)
     gm.ui_click = False
 
+def check_win_condition(screen, screen_size = [gm.screen_width, gm.screen_height]):
+    global playing
+    if(len(gc.self_cells) == 0):
+        print('no player cells left')
+        scene.show_defeat_screen(screen, screen_size)
+        playing = False
+    if(len(gc.cells) == 0):
+        print('no AI cells left')
+        scene.show_victory_screen(screen, screen_size)
+        playing = False
+
 def main():
     pg.init()
     
@@ -56,25 +73,9 @@ def main():
     pg.font.init()
 
     screen = pg.display.set_mode((gm.screen_width, gm.screen_height))
-    borders_width = 2 #map visual borders
     
-    for i in range(9):
-        x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
-        y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
-        gc.born_food_gen((x_born, y_born))
-
-    for i in range(10):
-        x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
-        y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
-        gc.born_cell([x_born, y_born], color.random(), i)
-
-    for i in range(2):
-        x_born = randint(3*borders_width, gm.scene_width - 3*borders_width)
-        y_born = randint(3*borders_width, gm.scene_height - 3*borders_width)
-        gc.born_self_cell([x_born, y_born], color.PLAYER_COLOR, i)
-        
-    #COSTYL
-    #ui.set_text()
+    gc.generate_level(food_gens = 9, cells = 1, self_cells = 2)   
+    
     while alive:
         handle_events(pg.event.get())
         
@@ -98,10 +99,9 @@ def main():
             gm.do_zoom(gm, -1)
 
         #must go through all events here additionaly, otherwise won't scroll continuesly
-
-
+        
         # CALCULATE NEW POS
-        if gm.frame % (gm.FPS // gm.Game_FPS) == 0:
+        if gm.frame % (gm.FPS // gm.Game_FPS) == 0 and playing:
             #any gamecore events happen here
             for cell in gc.self_cells:
                 gc.eat_food(cell, gc.self_cells)
@@ -124,7 +124,7 @@ def main():
                                  gm.zoom)  # draw food
         scene.draw_sqare_objects(screen, gc.cells+gc.self_cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #draw cells
         scene.draw_borders(screen, [gm.screen_width, gm.screen_height], gm.zoom,
-                     [gm.scene_width, gm.scene_height], color.random(), borders_width, gm.camera_pos)
+                     [gm.scene_width, gm.scene_height], color.random(), gm.borders_width, gm.camera_pos)
         scene.draw_cross_objects(screen, gc.food_generators, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #draw foodgens
 
         # еду рисуем при помощи той же функции, что и клетки
@@ -144,6 +144,8 @@ def main():
         ui.manager.draw_ui(screen)
         
         ui.draw_text(screen)
+        #scene.show_defeat_screen(screen, [gm.screen_width, gm.screen_height] )
+        check_win_condition(screen, screen_size = [gm.screen_width, gm.screen_height])
         
         pg.display.update()
         time.sleep(1.0 / gm.Game_FPS)

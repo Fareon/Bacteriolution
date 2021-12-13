@@ -21,6 +21,7 @@ screen_height = 600
 scene_width = screen_width//zoom
 scene_height = screen_height//zoom
 ui_panel_width = screen_width // 3
+borders_width = 2 #map visual borders
 
 ui_click = 0
 click_delay = 10
