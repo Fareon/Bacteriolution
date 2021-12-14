@@ -112,7 +112,7 @@ def generate_level(food_gens = 9, cells = 10, self_cells = 2):
         y_born = randint(3*gm.borders_width, gm.scene_height - 3*gm.borders_width)
         born_food_gen((x_born, y_born))
 
-    for i in range(cells):
+    for i in range(self_cells, self_cells + cells):
         x_born = randint(3*gm.borders_width, gm.scene_width - 3*gm.borders_width)
         y_born = randint(3*gm.borders_width, gm.scene_height - 3*gm.borders_width)
         born_cell([x_born, y_born], color.random_color(), i)
