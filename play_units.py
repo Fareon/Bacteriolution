@@ -1,6 +1,5 @@
 from random import choices, randint
 from numpy import cos, sin
-import game_core as gc
 from color import color
 import tricky_functions as f
 
@@ -132,11 +131,11 @@ class Cell:
             if bool(choices([0, 1], weights=[1 - impulse, impulse])[0]):
                 if self.x <= self.r + 2:
                     direction[3] = 0
-                elif self.x >= len(gc.grid) - (self.r + 2):
+                elif self.x >= len(grid) - (self.r + 2):
                     direction[1] = 0
                 if self.y <= self.r + 2:
                     direction[2] = 0
-                elif self.y >= len(gc.grid[0]) - (self.r + 2):
+                elif self.y >= len(grid[0]) - (self.r + 2):
                     direction[0] = 0
 
                 final_direction = choices(self.direct_list, weights=direction)[0]
@@ -244,8 +243,6 @@ class Cell:
         # Appending the cell where needed
         cells.append(daughter)
         grid[daughter.x][daughter.y].append(daughter)
-        
-        gc.update_ui()
 
     def mutate(self):
         """
@@ -316,7 +313,7 @@ class FoodSource:
         self.rate = 0.03  # chance to generate food current frame
         self.color = color.GREEN
 
-    def gen_food(self, scene_width, scene_height):
+    def gen_food(self, scene_width, scene_height, grid, food):
         r = (randint(4, self.range)) ** 0.75
         angle = randint(0, 360)
 
@@ -330,15 +327,14 @@ class FoodSource:
         y_born = f.clamp(y_born, 2, scene_height - 3)
 
         new_food = Food((x_born, y_born))
-        gc.food.append(new_food)
-        gc.grid[x_born][y_born].append(new_food)
+        food.append(new_food)
+        grid[x_born][y_born].append(new_food)
 
 
 class Food:
     """
     This class controls food and its position
     """
-    AMOUNT = 1
     cell_type = 'food'
     game_object = 'food'
 

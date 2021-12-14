@@ -1,4 +1,3 @@
-import numpy as np
 import play_units as unit
 import game_manager as gm
 import tricky_functions as f
