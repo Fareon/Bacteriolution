@@ -118,7 +118,7 @@ def main():
 
             for food_gen in gc.food_generators:
                 if f.chance(food_gen.rate):
-                    food_gen.gen_food()
+                    food_gen.gen_food(gm.scene_width, gm.scene_height)
 
         # GRAPHICS
         scene.draw_background(screen, color.WHITE)

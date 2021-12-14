@@ -1,9 +1,8 @@
 from random import choices, randint
+from numpy import cos, sin
 import game_core as gc
-import game_manager as gm
 from color import color
 import tricky_functions as f
-from numpy import cos, sin
 
 
 def close(obj_1, obj_2, distance):
@@ -16,25 +15,6 @@ def close(obj_1, obj_2, distance):
     """
     obj_distance = (obj_1.x - obj_2.x) ** 2 + (obj_1.y - obj_2.y) ** 2
     return obj_distance < distance ** 2
-
-
-def close_food_source(cell, foodsources, distance):
-    """
-    This function is needed to evalu
-    :param cell:
-    :param foodsources:
-    :param distance:
-    :return:
-    """
-    result = None
-    for foodsource in foodsources:
-        if close(cell, foodsource, distance):
-            result = foodsource
-            pass
-    if result is not None:
-        return result
-    else:
-        return False
 
 
 class Cell:
@@ -89,12 +69,12 @@ class Cell:
         if vision_distance is None:
             self.vision_distance = self.init_vision_distance
         else:
-            self.vision_distance=vision_distance
+            self.vision_distance = vision_distance
 
         if split_radius is None:
-            self.split_raduis = self.init_split_radius
+            self.split_radius = self.init_split_radius
         else:
-            self.split_raduis = split_radius
+            self.split_radius = split_radius
 
         self.r = self.init_r
         self.food_level = 1
@@ -168,7 +148,13 @@ class Cell:
         grid[self.x][self.y].append(self)
 
     def think_ahead(self, cells, food_sources, food):
-
+        """
+        This method defines the position, which cell is heading to
+        :param cells: List of all cells on the map
+        :param food_sources: List of all food sources on the map
+        :param food: List of all food on the map
+        :return: The most preferable heading position (tuple of len 2)
+        """
         cell_see_food_source_close = close(self, self.heading_food_source, self.vision_distance // 3)
         cell_see_food_source_far = close(self, self.heading_food_source, self.vision_distance + 5)
         heading_position = [self.x, self.y]
@@ -249,7 +235,7 @@ class Cell:
                         self.cell_type,
                         velocity=self.velocity,
                         vision_distance=self.vision_distance,
-                        split_radius=self.split_raduis,
+                        split_radius=self.split_radius,
                         after_split_r=self.after_split_r
                         )
         daughter.heading_food_source = self.heading_food_source
@@ -262,6 +248,9 @@ class Cell:
         gc.update_ui()
 
     def mutate(self):
+        """
+        This method changes characteristics of a given cell accordingly to built in constants.
+        """
         mutating_parameter = choices(self.mutating_parameters, weights=[3, 3, 1, 3, 2])[0]
         if mutating_parameter == self.mutating_parameters[0]:
             if self.after_split_r <= 2:
@@ -279,33 +268,36 @@ class Cell:
             else:
                 self.vision_distance += choices([-2, 2], weights=[1, 2])[0]
         elif mutating_parameter == self.mutating_parameters[3]:
-            if self.split_raduis <= self.after_split_r:
-                self.split_raduis += choices([0, 1], weights=[1, 3])[0]
+            if self.split_radius <= self.after_split_r:
+                self.split_radius += choices([0, 1], weights=[1, 3])[0]
             else:
-                self.split_raduis += choices([-1, 1], weights=[1, 3])[0]
+                self.split_radius += choices([-1, 1], weights=[1, 3])[0]
         elif mutating_parameter == self.mutating_parameters[4]:
             if self.direct_constant <= 1:
                 self.direct_constant += randint(0, 1)
             else:
                 self.direct_constant += choices([-1, 1])[0]
 
-    def tick(self):
-        """
-        Makes the cell grow older and become more hungry
-        """
-        self.energy -= 1
-        self.life -= 1
-
     def grow(self):
+        """
+        The cell grows in radius
+        """
         self.food_level = 1
         self.r += 1
 
-    def eat(self, cells, grid):
+    def eat(self, cells, grid, eaten_object):
+        """
+        The cell eats the object and grows.
+        :param cells: List of all cells on the map
+        :param grid: Grid of the game
+        :param eaten_object: The object the cell eats
+        """
         if self.food_level <= self.r ** 2:
-            self.food_level += 1
+            self.food_level += eaten_object.r
         else:
             self.grow()
-        if self.r >= self.split_raduis:
+
+        if self.r >= self.split_radius:
             self.split_cell(cells, grid)
 
 
@@ -324,7 +316,7 @@ class FoodSource:
         self.rate = 0.03  # chance to generate food current frame
         self.color = color.GREEN
 
-    def gen_food(self):
+    def gen_food(self, scene_width, scene_height):
         r = (randint(4, self.range)) ** 0.75
         angle = randint(0, 360)
 
@@ -334,8 +326,8 @@ class FoodSource:
         # x_born = self.x + (-1)**(randint(1,2)) * randint(2, self.range)
         # y_born = self.y + (-1) ** (randint(1, 2)) * randint(2, self.range)
 
-        x_born = f.clamp(x_born, 2, gm.scene_width - 3)
-        y_born = f.clamp(y_born, 2, gm.scene_height - 3)
+        x_born = f.clamp(x_born, 2, scene_width - 3)
+        y_born = f.clamp(y_born, 2, scene_height - 3)
 
         new_food = Food((x_born, y_born))
         gc.food.append(new_food)

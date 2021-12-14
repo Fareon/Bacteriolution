@@ -68,7 +68,7 @@ def eat_food(cell, list_of_cells):
     for food_eaten in all_food['food']:
         grid[food_eaten.x][food_eaten.y].remove(food_eaten)
         food.remove(food_eaten)
-        cell.eat(list_of_cells, grid)
+        cell.eat(list_of_cells, grid, food_eaten)
         if(cell.color == color.PLAYER_COLOR and food_eaten == all_food['food'][-1]):
             sound.play_eat_food_sound()
             update_ui()
@@ -90,7 +90,7 @@ def eat_food(cell, list_of_cells):
             if(food_eaten in self_cells): 
                 self_cells.remove(food_eaten)
             
-            cell.eat(list_of_cells, grid)
+            cell.eat(list_of_cells, grid, food_eaten)
             if(cell.color == color.PLAYER_COLOR and food_eaten == all_food['cell'][-1]):
                 sound.eat_cell_sound.play()
                 update_ui()
