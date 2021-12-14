@@ -110,10 +110,10 @@ def main():
                 gc.eat_food(cell, gc.self_cells)
                 if gm.clickpos is not None:
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
-                    cell.move(move_to)                
+                    cell.move(move_to, gc.grid)
             for cell in gc.cells:
                 gc.eat_food(cell, gc.cells)
-                cell.move(cell.think_ahead(gc.cells+gc.self_cells, gc.food_generators, gc.food))
+                cell.move(cell.think_ahead(gc.cells+gc.self_cells, gc.food_generators, gc.food), gc.grid)
                 
 
             for food_gen in gc.food_generators:

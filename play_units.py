@@ -3,16 +3,29 @@ import game_core as gc
 import game_manager as gm
 from color import color
 import tricky_functions as f
-from numpy import cos, sin, array
-from numpy.linalg import norm
+from numpy import cos, sin
 
 
 def close(obj_1, obj_2, distance):
+    """
+    This function is needed to understand whether the two given objects are closer than the given distance
+    :param obj_1: First object
+    :param obj_2: Second object
+    :param distance: The distance needed to be evaluated
+    :return: True if closer, False else
+    """
     obj_distance = (obj_1.x - obj_2.x) ** 2 + (obj_1.y - obj_2.y) ** 2
     return obj_distance < distance ** 2
 
 
 def close_foodsource(cell, foodsources, distance):
+    """
+    This function is needed to evalu
+    :param cell:
+    :param foodsources:
+    :param distance:
+    :return:
+    """
     result = None
     for foodsource in foodsources:
         if close(cell, foodsource, distance):
@@ -37,157 +50,119 @@ class Cell:
     init_direct_constant = 2
     mutating_parameters = [init_r, init_velocity, init_vision_distance, init_split_radius, init_direct_constant]
 
-    def __init__(self, x, y, cell_color, cell_type, velocity=None, vision_distance=None, split_radius=None,
-                 after_split_r=None):
+    def __init__(self,
+                 x,
+                 y,
+                 cell_color,
+                 cell_type,
+                 velocity=None,
+                 vision_distance=None,
+                 split_radius=None,
+                 after_split_r=None
+                 ):
         """
         :param x: horizontal position on the grid.py
         :param y: vertical position on the grid.py
-        :param color: color of a cell (GREEN, for example)
+        :param cell_color: color of a cell (GREEN, for example)
+        :param cell_type: Type of a newly born cell
+        :param velocity: Cell's velocity
+        :param vision_distance: Parameter, that defines how far the cell cen see
+        :param split_radius: Radius, which is needed to be reached before splitting
+        :param after_split_r: Radius of the daughter cells
         """
         self.x = x
         self.y = y
-        self.cell_type = cell_type  # this is needed for future managing
         self.color = cell_color
-        self.r = self.init_r
+        self.cell_type = cell_type
+
         if after_split_r is None:
             self.after_split_r = self.init_r
         else:
             self.after_split_r = after_split_r
-        self.direction = None  # will be a list of len 4 (up, right, down, left)
+
         if velocity is None:
             self.velocity = self.init_velocity
         else:
             self.velocity = velocity
+
         if vision_distance is None:
             self.vision_distance = self.init_vision_distance
         else:
             self.vision_distance=vision_distance
-        self.energy = None  # In future will stand for hunger
-        self.life = None  # In future will stand for how ling the cell is going to live
-        self.food_level = 1
-        self.heading_position = None
-        self.heading_foodsource = None
+
         if split_radius is None:
             self.split_raduis = self.init_split_radius
         else:
             self.split_raduis = split_radius
-        self.mutating_parameter = None
-        self.direct_constant = self.init_direct_constant
 
-    def move(self, position: tuple):
+        self.r = self.init_r
+        self.food_level = 1
+        self.heading_foodsource = None
+        self.direct_constant = self.init_direct_constant
+        self.life = None  # In future will stand for how ling the cell is going to live
+        self.energy = None  # In future will stand for hunger
+
+    def move(self, position: tuple, grid):
         """
-        Moves the cell according to its direction probabilities.
+        Moves the cell according to its direction probabilities and coordinates.
         Counts the weight of directions accordingly and moves the cell after choosing direction.
         :param grid: grid which defines the bonds
         :param position: tuple (len = 2), with coordinates of the most preferable direction
         """
-        gc.grid[self.x][self.y].remove(self)
-        
-        impulse = self.velocity
-        self.direction = [self.direct_constant for _ in range(4)]
+        # Removing the cell from grid
+        grid[self.x][self.y].remove(self)
+
+        direction = [self.direct_constant for _ in range(4)]
+        # Counting probabilities
         if position[0] != self.x and position[1] != self.y:
             if position[0] >= self.x and position[1] >= self.y:
-                self.direction[0] = position[1] - self.y
-                self.direction[1] = position[0] - self.x
+                direction[0] = position[1] - self.y
+                direction[1] = position[0] - self.x
             elif position[0] >= self.x:
-                self.direction[2] = self.y - position[1]
-                self.direction[1] = position[0] - self.x
+                direction[2] = self.y - position[1]
+                direction[1] = position[0] - self.x
             elif position[1] >= self.y:
-                self.direction[0] = position[1] - self.y
-                self.direction[3] = self.x - position[0]
+                direction[0] = position[1] - self.y
+                direction[3] = self.x - position[0]
             else:
-                self.direction[2] = self.y - position[1]
-                self.direction[3] = self.x - position[0]
+                direction[2] = self.y - position[1]
+                direction[3] = self.x - position[0]
 
-        while impulse > 1:
+        # Moving the cell while the impulse is not zero
+        impulse = self.velocity
+        while impulse >= 1:
             if self.x <= self.r + 2:
-                self.direction[3] = 0
-            elif self.x >= len(gc.grid) - (self.r + 2):
-                self.direction[1] = 0
+                direction[3] = 0
+            elif self.x >= len(grid) - (self.r + 2):
+                direction[1] = 0
             if self.y <= self.r + 2:
-                self.direction[2] = 0
-            elif self.y >= len(gc.grid[0]) - (self.r + 2):
-                self.direction[0] = 0
+                direction[2] = 0
+            elif self.y >= len(grid[0]) - (self.r + 2):
+                direction[0] = 0
 
-            final_direction = choices(self.direct_list, weights=self.direction)[0]
+            final_direction = choices(self.direct_list, weights=direction)[0]
 
             self.x += final_direction[0]
             self.y += final_direction[1]
             impulse -= 1
-        if impulse >= 0:
+
+        if impulse > 0:
             if bool(choices([0, 1], weights=[1 - impulse, impulse])[0]):
                 if self.x <= self.r + 2:
-                    self.direction[3] = 0
+                    direction[3] = 0
                 elif self.x >= len(gc.grid) - (self.r + 2):
-                    self.direction[1] = 0
+                    direction[1] = 0
                 if self.y <= self.r + 2:
-                    self.direction[2] = 0
+                    direction[2] = 0
                 elif self.y >= len(gc.grid[0]) - (self.r + 2):
-                    self.direction[0] = 0
+                    direction[0] = 0
 
-                final_direction = choices(self.direct_list, weights=self.direction)[0]
-                
-                
-
+                final_direction = choices(self.direct_list, weights=direction)[0]
                 self.x += final_direction[0]
                 self.y += final_direction[1]
-                
-        gc.grid[self.x][self.y].append(self)
-                
 
-    #  Егор, пока что не реализцуй эту функцию,
-    #  там надо прописать типы у всех типов, потому что это влияет на отпределение направления
-    def evaluate_direction(self, grid: list, list_of_foodsources: list):
-        """
-        Evaluates the most preferable direction for a cell
-        :param list_of_foodsources: list of all foodsources on the map (objects). the cell decides to which one to go.
-        :param grid: map of objects on the playing surface
-        :return: tuple of 2 ints -- position of direction
-        """
-        cell_see_food = False
-        food_wish = 1
-        fear = 10
-        food_count = 0
-        food_gen_count = 0
-        cell_see_cell = False
-        heading_position = [self.x, self.y]
-        closest_foodsource = []
-        if self.x + self.vision_distance >= len(grid):
-            columns = grid[self.x - self.vision_distance:]
-        elif self.x - self.vision_distance <= 0:
-            columns = grid[:self.x + self.vision_distance]
-        else:
-            columns = grid[self.x - self.vision_distance:self.x + self.vision_distance]
-        for row in columns:
-            if self.y + self.vision_distance >= len(row):
-                rows = grid[:self.y + self.vision_distance]
-            elif self.y - self.vision_distance <= 0:
-                rows = grid[self.y - self.vision_distance:]
-            else:
-                rows = grid[self.y - self.vision_distance:self.y + self.vision_distance]
-            for dot in rows:
-                for unit in dot:
-                    if unit:
-                        unit = unit[0]
-                        if unit.cell_type != self.cell_type and unit.cell_type != "food" and unit.cell_type != "food_gen":
-                            #print("see enemy", unit.cell_type)
-                            #if unit.cell_type != self.cell_type: #and unit.r > self.r + 1 and unit.cell_type != "food":
-                            heading_position[0] -= (unit.x - self.x)
-                            heading_position[1] -= (unit.y - self.y)
-                        #cell_see_food = True
-                        #cell_see_cell = True
-                        # elif unit.cell_type == 'food':  # FIXME: has to be edited in order to fit the model
-                        # food_count += 1
-                        # if not cell_see_food:
-                        #  heading_position[0] += int((unit.x - self.x) * food_wish)
-                        #  heading_position[1] += int((unit.y - self.y) * food_wish)
-                        #  cell_see_food = True
-                        # elif unit.cell_type == 'food_gen':
-                        # food_gen_count += 1
-                        # closest_foodsource = unit
-        # if food_count <= 9 and food_gen_count != 0 and (not cell_see_cell):
-        # heading_position = self.evaluate_foodsource(list_of_foodsources)
-        return tuple(heading_position)
+        # Returning the cell to the grid
+        grid[self.x][self.y].append(self)
 
     def think_ahead(self, cells, foodsources, food):
         cell_see_foodsource_close = close(self, self.heading_foodsource, self.vision_distance // 3)
