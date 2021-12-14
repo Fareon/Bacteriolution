@@ -1,6 +1,6 @@
 from random import choices, randint
 from numpy import cos, sin
-from color import color
+import color
 import tricky_functions as f
 
 

@@ -1,7 +1,7 @@
 import pygame as pg
 import pygame_gui
 import game_manager as gm
-from color import color
+import color
 
 #ui variables storage
 class cell_icon:

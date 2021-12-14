@@ -3,7 +3,7 @@ import game_manager as gm
 import tricky_functions as f
 import sound
 import ui
-from color import color
+import color
 
 #INITIAL SHIT
 cells = []
@@ -115,7 +115,7 @@ def generate_level(food_gens = 9, cells = 10, self_cells = 2):
     for i in range(cells):
         x_born = randint(3*gm.borders_width, gm.scene_width - 3*gm.borders_width)
         y_born = randint(3*gm.borders_width, gm.scene_height - 3*gm.borders_width)
-        born_cell([x_born, y_born], color.random(), i)
+        born_cell([x_born, y_born], color.random_color(), i)
 
     for i in range(self_cells):
         x_born = randint(3*gm.borders_width, gm.scene_width - 3*gm.borders_width)

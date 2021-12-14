@@ -2,7 +2,7 @@ import pygame as pg
 import pygame_gui
 import ui
 import time
-from color import color
+import color
 import scene
 import sound
 import game_manager as gm
@@ -127,7 +127,7 @@ def main():
                                  gm.zoom)  # draw food
         scene.draw_sqare_objects(screen, gc.cells+gc.self_cells, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #draw cells
         scene.draw_borders(screen, [gm.screen_width, gm.screen_height], gm.zoom,
-                     [gm.scene_width, gm.scene_height], color.random(), gm.borders_width, gm.camera_pos)
+                     [gm.scene_width, gm.scene_height], color.random_color(), gm.borders_width, gm.camera_pos)
         scene.draw_cross_objects(screen, gc.food_generators, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom) #draw foodgens
 
         # еду рисуем при помощи той же функции, что и клетки
