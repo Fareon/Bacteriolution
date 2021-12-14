@@ -18,7 +18,7 @@ def close(obj_1, obj_2, distance):
     return obj_distance < distance ** 2
 
 
-def close_foodsource(cell, foodsources, distance):
+def close_food_source(cell, foodsources, distance):
     """
     This function is needed to evalu
     :param cell:
@@ -61,6 +61,7 @@ class Cell:
                  after_split_r=None
                  ):
         """
+        Initializes the creation of an object of class Cell
         :param x: horizontal position on the grid.py
         :param y: vertical position on the grid.py
         :param cell_color: color of a cell (GREEN, for example)
@@ -97,7 +98,7 @@ class Cell:
 
         self.r = self.init_r
         self.food_level = 1
-        self.heading_foodsource = None
+        self.heading_food_source = None
         self.direct_constant = self.init_direct_constant
         self.life = None  # In future will stand for how ling the cell is going to live
         self.energy = None  # In future will stand for hunger
@@ -144,6 +145,7 @@ class Cell:
 
             self.x += final_direction[0]
             self.y += final_direction[1]
+
             impulse -= 1
 
         if impulse > 0:
@@ -158,15 +160,17 @@ class Cell:
                     direction[0] = 0
 
                 final_direction = choices(self.direct_list, weights=direction)[0]
+
                 self.x += final_direction[0]
                 self.y += final_direction[1]
 
         # Returning the cell to the grid
         grid[self.x][self.y].append(self)
 
-    def think_ahead(self, cells, foodsources, food):
-        cell_see_foodsource_close = close(self, self.heading_foodsource, self.vision_distance // 3)
-        cell_see_foodsource_far = close(self, self.heading_foodsource, self.vision_distance + 5)
+    def think_ahead(self, cells, food_sources, food):
+
+        cell_see_food_source_close = close(self, self.heading_food_source, self.vision_distance // 3)
+        cell_see_food_source_far = close(self, self.heading_food_source, self.vision_distance + 5)
         heading_position = [self.x, self.y]
         cell_see_pray = False
         cell_see_enemy = False
@@ -181,16 +185,16 @@ class Cell:
                     if close(cell, self, self.vision_distance - 5):
                         cell_see_pray = True
                         pray = cell
-        if cell_see_enemy and cell_see_foodsource_far:
-            self.evaluate_foodsource(foodsources)
-            heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
+        if cell_see_enemy and cell_see_food_source_far:
+            self.change_food_source(food_sources)
+            heading_position = [self.heading_food_source.x, self.heading_food_source.y]
         elif (not cell_see_enemy) and (not cell_see_pray):
             many_food = self.count_food(food)
-            if not cell_see_foodsource_far:
-                heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
+            if not cell_see_food_source_far:
+                heading_position = [self.heading_food_source.x, self.heading_food_source.y]
             elif not many_food:
-                self.evaluate_foodsource(foodsources)
-                heading_position = [self.heading_foodsource.x, self.heading_foodsource.y]
+                self.change_food_source(food_sources)
+                heading_position = [self.heading_food_source.x, self.heading_food_source.y]
             elif many_food:
                 heading_position = self.get_food(food)
         elif cell_see_pray and (not cell_see_enemy):
@@ -198,26 +202,31 @@ class Cell:
             heading_position[1] += (pray.y - self.y)
         return tuple(heading_position)
 
-    def evaluate_foodsource(self, foodsources: list):
+    def change_food_source(self, food_sources: list):
         """
-        this function stands for the cell decision to move to a fodsource if no enemies are present
-        :param foodsources: list of all foodsources on the map (objects). the cell decides to which one to go
-        :return: heading position (list)
+        Changes the food source the cell if heading for
+        :param food_sources: List of all food sources on the map (objects). The cell decides which to reach
         """
-        food_list = foodsources.copy()
-        self.heading_foodsource = choices(food_list)[0]
+        self.heading_food_source = choices(food_sources)[0]
 
     def count_food(self, food):
+        """
+        This method helps the cell to count the food within the visible distance
+        :param food: List of all food on the map
+        :return: True if enough food, else False
+        """
         count = 0
         for foodie in food:
             if close(self, foodie, self.vision_distance + 10):
                 count += 1
-        if count >= 5:
-            return True
-        else:
-            return False
+        return count >= 5
 
     def get_food(self, food):
+        """
+        Gives the cell a destination of a food object
+        :param food:  List of all food on the map
+        :return: position, which to head (list, len = 2)
+        """
         heading_position = None
         for foodie in food:
             if close(self, foodie, self.vision_distance + 10):
@@ -225,16 +234,30 @@ class Cell:
                 pass
         return heading_position
 
-    def split_cell(self, cells):
+    def split_cell(self, cells, grid):
+        """
+        The cell splits and becomes the two new ones
+        :param cells: List of cells of the game
+        :param grid: Game grid
+        """
         self.r = self.after_split_r
-        daughter = Cell(self.x, self.y, self.color, self.cell_type, velocity=self.velocity,
-                        vision_distance=self.vision_distance, split_radius=self.split_raduis,
-                        after_split_r=self.after_split_r)
-        daughter.heading_foodsource = self.heading_foodsource
+
+        # Creating new object of the type Cell
+        daughter = Cell(self.x,
+                        self.y,
+                        self.color,
+                        self.cell_type,
+                        velocity=self.velocity,
+                        vision_distance=self.vision_distance,
+                        split_radius=self.split_raduis,
+                        after_split_r=self.after_split_r
+                        )
+        daughter.heading_food_source = self.heading_food_source
         daughter.mutate()
-        
+
+        # Appending the cell where needed
         cells.append(daughter)
-        gc.grid[daughter.x][daughter.y].append(daughter)
+        grid[daughter.x][daughter.y].append(daughter)
         
         gc.update_ui()
 
@@ -260,7 +283,7 @@ class Cell:
                 self.split_raduis += choices([0, 1], weights=[1, 3])[0]
             else:
                 self.split_raduis += choices([-1, 1], weights=[1, 3])[0]
-        elif mutating_parameter == self.mutating_parameter[4]:
+        elif mutating_parameter == self.mutating_parameters[4]:
             if self.direct_constant <= 1:
                 self.direct_constant += randint(0, 1)
             else:
@@ -274,17 +297,16 @@ class Cell:
         self.life -= 1
 
     def grow(self):
-        self.vision_distance += 2
         self.food_level = 1
         self.r += 1
 
-    def eat(self, cells):
+    def eat(self, cells, grid):
         if self.food_level <= self.r ** 2:
             self.food_level += 1
         else:
             self.grow()
         if self.r >= self.split_raduis:
-            self.split_cell(cells)
+            self.split_cell(cells, grid)
 
 
 class FoodSource:
