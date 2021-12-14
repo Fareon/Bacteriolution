@@ -35,7 +35,7 @@ def born_self_cell(pos, color, cell_type):
     update_ui()
 
 def born_food_gen(pos):
-    food_gen = unit.FoodSource(pos)
+    food_gen = unit.FoodSource(pos, self_color=color.GREEN, food_color=color.BLUE)
     food_generators.append(food_gen)
     grid[pos[0]][pos[1]].append(food_gen)
 

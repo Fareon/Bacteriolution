@@ -305,13 +305,14 @@ class FoodSource:
     cell_type = 'food_gen'
     game_object = 'food_gen'
 
-    def __init__(self, position: tuple):
+    def __init__(self, position: tuple, self_color, food_color, range_r=50, rate=0.03):
         self.x = position[0]
         self.y = position[1]
         self.r = 2
-        self.range = 50
-        self.rate = 0.03  # chance to generate food current frame
-        self.color = color.GREEN
+        self.range = range_r
+        self.rate = rate  # chance to generate food current frame
+        self.color = self_color
+        self.food_color = food_color
 
     def gen_food(self, scene_width, scene_height, grid, food):
         r = (randint(4, self.range)) ** 0.75
@@ -326,7 +327,7 @@ class FoodSource:
         x_born = f.clamp(x_born, 2, scene_width - 3)
         y_born = f.clamp(y_born, 2, scene_height - 3)
 
-        new_food = Food((x_born, y_born))
+        new_food = Food((x_born, y_born), self.food_color)
         food.append(new_food)
         grid[x_born][y_born].append(new_food)
 
@@ -337,8 +338,8 @@ class Food:
     """
     cell_type = 'food'
     game_object = 'food'
+    r = 1
 
-    def __init__(self, food_position: tuple):
+    def __init__(self, food_position: tuple, food_color):
         self.x, self.y = self.position = food_position
-        self.r = 1
-        self.color = color.BLUE
+        self.color = food_color
