@@ -65,6 +65,11 @@ class hunger:
 
 
 manager = pygame_gui.UIManager((gm.screen_width, gm.screen_height), "UI/layout.json")
+mutate_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((mutate.x1, mutate.y1),
+                                                                   (mutate.x2, mutate.y2)),
+                                                 text='', object_id=f"#mutate",
+                                                 #parent_element = info_panel_button,
+                                                 manager=manager)
 
 info_panel_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((-20, -20), (gm.ui_panel_width, gm.screen_height*1.2)),
                                                  text='', object_id=f"#info_panel",
@@ -73,11 +78,7 @@ cell_icon_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((cell_icon
                                                  text='', object_id=f"#cell_icon",
                                                  parent_element = info_panel_button,
                                                  manager=manager)
-mutate_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((mutate.x1, mutate.y1),
-                                                                   (mutate.x2, mutate.y2)),
-                                                 text='', object_id=f"#mutate",
-                                                 parent_element = info_panel_button,
-                                                 manager=manager)
+
 '''gamespeed_text_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((gamespeed_text.x1, gamespeed_text.y1), 
                                                                   (gamespeed_text.x2, gamespeed_text.y2)),
                                                  text='', object_id=f"#mutate",
@@ -89,7 +90,7 @@ game_speed_scrbar = pygame_gui.elements.UIHorizontalScrollBar(relative_rect=pg.R
                                                  visible_percentage  = 0.3, object_id=f"#scroll_bar",
                                                  parent_element = info_panel_button,
                                                  manager=manager)
-
+info_panel_button.change_layer(0)
 pg.font.init()
 pg.font.Font('UI/Pixeboy-z8XGD.ttf', 80)
 bitfont = {80: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 80), 20: pg.font.Font('UI/Pixeboy-z8XGD.ttf', 20),
@@ -114,13 +115,6 @@ generate_text()
 def draw_text(screen):
     for text in text_elements:
         if(text.text_surf is not None): screen.blit(text.text_surf, (text.x, text.y))
-    
-#pygame_gui can't work with it!
-'''def set_text():
-    your_cell_text.set_text('YOUR CELL')
-    mutate_button.set_text('MUTATE')
-    gamespeed_text_button.set_text('gamespeed_text')
-    radius_text.set_text('REACH FOOD')'''
 
 if __name__ == "__main__":
     exec(open("main.py").read())

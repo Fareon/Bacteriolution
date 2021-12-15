@@ -19,11 +19,12 @@ def handle_events(events):
     for event in events:
         if event.type == pg.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == ui.info_panel_button:
-                    if ui.mutate_button.process_event(event):
-                        print('intended to mutate')
+                if event.ui_element == ui.mutate_button:
+                    print('mutate')
+                if event.ui_element == ui.info_panel_button:                        
                     gm.ui_click = True
                     print('Iteracted with ui')
+                
 
     for event in events:
         ui.manager.process_events(event)
