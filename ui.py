@@ -2,7 +2,22 @@ import pygame as pg
 import pygame_gui
 import game_manager as gm
 import color
+import json
 
+
+def change_cell_icon_color(new_color):
+    new_color_hex = color.rgb_to_hex(new_color)
+    with open("UI/layout.json", 'r') as json_file:
+        json_object = json.load(json_file)        
+        colours = json_object['#cell_icon']['colours']
+    with open("UI/layout.json", 'w') as json_file:
+        colours['normal_bg'] = new_color_hex  
+        colours['hovered_bg'] = new_color_hex  
+        colours['disabled_bg'] = new_color_hex  
+        colours['selected_bg'] = new_color_hex  
+        colours['active_bg'] = new_color_hex  
+        json.dump(json_object, json_file)
+change_cell_icon_color(color.INIT_PLAYER_COLOR)
 #ui variables storage
 class cell_icon:
     w, h = 120, 90

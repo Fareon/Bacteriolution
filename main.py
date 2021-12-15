@@ -24,6 +24,9 @@ def handle_events(events):
                     new_color = color.random_color()
                     for cell in gc.self_cells:
                         cell.player_mutate(new_color)
+                        ui.change_cell_icon_color(cell.color)
+                        ui.cell_icon_button.rebuild_from_changed_theme_data()
+
                 if event.ui_element == ui.info_panel_button:                        
                     gm.ui_click = True
                     print('Iteracted with ui')

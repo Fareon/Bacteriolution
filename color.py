@@ -17,3 +17,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 UI = (150, 150, 150)
 UI2 = (70, 125, 100)
+INIT_PLAYER_COLOR = (135, 206, 235)
+
+def rgb_to_hex(color): #as tuple (r, g, b)
+    return '#{:02x}{:02x}{:02x}'.format(*color)
