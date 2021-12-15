@@ -21,6 +21,9 @@ def handle_events(events):
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == ui.mutate_button:
                     print('mutate')
+                    new_color = color.random_color()
+                    for cell in gc.self_cells:
+                        cell.player_mutate(new_color)
                 if event.ui_element == ui.info_panel_button:                        
                     gm.ui_click = True
                     print('Iteracted with ui')
