@@ -53,14 +53,15 @@ def handle_events(events):
                 print('Self_cells:', len(gc.self_cells))
                 gc.debug_grid()'''
 
-            keys = pg.key.get_pressed()
-
         if event.type == pg.MOUSEBUTTONDOWN:
 
             # If the game is not going not, it start after clicking
             if not playing:
                 playing = True
+
                 gc.generate_level(food_gens=9, cells=5, self_cells=1)
+
+                ui.change_cell_icon_color(color.INIT_PLAYER_COLOR)
 
             if pg.mouse.get_pos()[0] > gm.ui_panel_width:
                 gm.clickpos = pg.mouse.get_pos()
@@ -112,12 +113,12 @@ def main():
         handle_events(pg.event.get())
 
         if ui.game_speed_scrbar.check_has_moved_recently():
-            gm.Game_FPS = 50 + ui.game_speed_scrbar.scroll_position / 98 * 65  # bad code
-            print(ui.game_speed_scrbar.scroll_position)
+            gm.Game_FPS = 60 + ui.game_speed_scrbar.scroll_position / 2
 
-        # DETECT INPUT
+        # Detecting input
         keys_pressed = pg.key.get_pressed()
 
+        # Giving response (moving camera)
         if keys_pressed[pg.K_LEFT] or keys_pressed[pg.K_a]:
             gm.move_camera(gm, (-1, 0))
         if keys_pressed[pg.K_RIGHT] or keys_pressed[pg.K_d]:
@@ -127,21 +128,24 @@ def main():
         if keys_pressed[pg.K_DOWN] or keys_pressed[pg.K_s]:
             gm.move_camera(gm, (0, -1))
 
+        # Giving response (zooming)
         if keys_pressed[pg.K_z]:
             gm.do_zoom(gm, +1)
         if keys_pressed[pg.K_x]:
             gm.do_zoom(gm, -1)
 
-        # must go through all events here additionaly, otherwise won't scroll continuesly
+        # We must go through all events here additionally, otherwise won't scroll continuously
 
-        # CALCULATE NEW POS
+        # Calculating new position
         if gm.frame % (gm.FPS // gm.Game_FPS) == 0 and playing:
-            # any gamecore events happen here
+
+            # Any game core events happen here
             for cell in gc.self_cells:
                 gc.eat_food(cell, gc.self_cells)
                 if gm.clickpos is not None:
                     move_to = gm.ScreenToScene(gm, gm.clickpos)
                     cell.move(move_to, gc.grid)
+
             for cell in gc.cells:
                 gc.eat_food(cell, gc.cells)
                 cell.move(cell.think_ahead(gc.cells + gc.self_cells, gc.food_generators, gc.food), gc.grid)
@@ -150,36 +154,45 @@ def main():
                 if f.chance(food_gen.rate):
                     food_gen.gen_food(gm.scene_width, gm.scene_height, gc.grid, gc.food)
 
-        # GRAPHICS
+        # Graphics
+        # Updating background
         scene.draw_background(screen, color.WHITE)
 
-        scene.draw_sqare_objects(screen, gc.food, gm.camera_pos, [gm.screen_width, gm.screen_height],
-                                 gm.zoom)  # draw food
-        scene.draw_sqare_objects(screen, gc.cells + gc.self_cells, gm.camera_pos, [gm.screen_width, gm.screen_height],
-                                 gm.zoom)  # draw cells
-        scene.draw_borders(screen, [gm.screen_width, gm.screen_height], gm.zoom,
-                           [gm.scene_width, gm.scene_height], color.random_color(), gm.borders_width, gm.camera_pos)
-        scene.draw_cross_objects(screen, gc.food_generators, gm.camera_pos, [gm.screen_width, gm.screen_height],
-                                 gm.zoom)  # draw foodgens
-
-        # еду рисуем при помощи той же функции, что и клетки
-
-        # источники еды рисуем с помощью функции draw_cross_objects(), входные данные такие же как у draw_sqare_objects()
-        # только отрисовывается крест, вписанный в соответствующий квадрат
-
-        # отрисовка границ:
-        # draw_borders(screen, [gm.screen_width, gm.screen_height], gm.zoom,
-        # gamefield_size, borders_color, borders_width, gm.camera_pos)
-
-        # gamefield_size = [gamefield_width, gamefield_height] - размеры игрового поля, где может находиться клетка
-        # borders_width - толщина границы в наших пикселях
+        # Drawing food
+        scene.draw_sqare_objects(screen, gc.food, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom)
+        # Drawing cells
+        scene.draw_sqare_objects(
+            screen,
+            gc.cells + gc.self_cells,
+            gm.camera_pos,
+            [gm.screen_width, gm.screen_height],
+            gm.zoom
+        )
+        # Drawing borders
+        scene.draw_borders(
+            screen,
+            [gm.screen_width,
+            gm.screen_height],
+            gm.zoom,
+            [gm.scene_width, gm.scene_height],
+            color.random_color(),
+            gm.borders_width,
+            gm.camera_pos
+        )
+        # Drawing food generators
+        scene.draw_cross_objects(
+            screen,
+            gc.food_generators,
+            gm.camera_pos,
+            [gm.screen_width,
+             gm.screen_height],
+            gm.zoom
+        )
 
         ui.manager.update(1.0 / gm.Game_FPS)
         ui.manager.draw_ui(screen)
-
-
         ui.draw_text(screen)
-        # scene.show_defeat_screen(screen, [gm.screen_width, gm.screen_height] )
+
         check_win_condition(screen, screen_size=[gm.screen_width, gm.screen_height])
 
         pg.display.update()
@@ -187,6 +200,19 @@ def main():
         gm.frame += 1
 
 
+# Beginning the game
 if __name__ == "__main__":
     sound.play_background_music()
     main()
+
+# еду рисуем при помощи той же функции, что и клетки
+
+# источники еды рисуем с помощью функции draw_cross_objects(), входные данные такие же как у draw_sqare_objects()
+# только отрисовывается крест, вписанный в соответствующий квадрат
+
+# отрисовка границ:
+# draw_borders(screen, [gm.screen_width, gm.screen_height], gm.zoom,
+# gamefield_size, borders_color, borders_width, gm.camera_pos)
+
+# gamefield_size = [gamefield_width, gamefield_height] - размеры игрового поля, где может находиться клетка
+# borders_width - толщина границы в наших пикселях
