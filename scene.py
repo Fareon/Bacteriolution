@@ -1,4 +1,6 @@
-import pygame
+from pygame import Surface, SRCALPHA
+from pygame.draw import rect
+from pygame.font import Font
 
 square_outline_color = (57, 57, 57)
 square_outline_width = 1
@@ -35,7 +37,7 @@ def draw_borders(screen, screen_size, zoom, game_field_size, borders_color, bord
     if borders_width_in_real_pixels < 1:
         borders_width_in_real_pixels = 1
     # Drawing top border
-    pygame.draw.rect(
+    rect(
         screen,
         borders_color,
         (x0 * pixel_size,
@@ -44,7 +46,7 @@ def draw_borders(screen, screen_size, zoom, game_field_size, borders_color, bord
          borders_width_in_real_pixels)
     )
     # Drawing left border
-    pygame.draw.rect(
+    rect(
         screen,
         borders_color,
         (x0 * pixel_size,
@@ -54,7 +56,7 @@ def draw_borders(screen, screen_size, zoom, game_field_size, borders_color, bord
          )
     )
     # Drawing bottom border
-    pygame.draw.rect(
+    rect(
         screen,
         borders_color,
         (x0 * pixel_size,
@@ -64,7 +66,7 @@ def draw_borders(screen, screen_size, zoom, game_field_size, borders_color, bord
          )
     )
     # Drawing right border
-    pygame.draw.rect(
+    rect(
         screen,
         borders_color,
         ((x0 + game_field_size[0] + borders_width) * pixel_size,
@@ -116,12 +118,12 @@ def square_objects_display(screen, pixel_size, scene_objects):
         y = obj[1]
         r = obj[2]
         color = obj[3]
-        pygame.draw.rect(
+        rect(
             screen,
             color,
             ((x - r) * pixel_size, (y - r) * pixel_size, 2 * r * pixel_size, 2 * r * pixel_size)
         )
-        pygame.draw.rect(
+        rect(
             screen,
             square_outline_color,
             ((x - r) * pixel_size, (y - r) * pixel_size, 2 * r * pixel_size, 2 * r * pixel_size),
@@ -141,12 +143,12 @@ def cross_objects_display(screen, pixel_size, scene_objects):
         y = obj[1]
         r = obj[2]
         color = obj[3]
-        pygame.draw.rect(
+        rect(
             screen,
             color,
             ((x - r / 2) * pixel_size, (y - r) * pixel_size, r * pixel_size, 2 * r * pixel_size)
         )
-        pygame.draw.rect(
+        rect(
             screen,
             color,
             ((x - r) * pixel_size, (y - r / 2) * pixel_size, 2 * r * pixel_size, r * pixel_size)
@@ -187,10 +189,10 @@ def show_defeat_screen(screen, screen_size):
     :param screen: pygame screen
     :param screen_size: [screen_with, screen_height]
     """
-    surface = pygame.Surface((screen_size[0], screen_size[1]), pygame.SRCALPHA)
-    pygame.draw.rect(surface, (0, 0, 0, 220), (0, 0, screen_size[0], screen_size[1]))
+    surface = Surface((screen_size[0], screen_size[1]), SRCALPHA)
+    rect(surface, (0, 0, 0, 220), (0, 0, screen_size[0], screen_size[1]))
 
-    font = pygame.font.Font("Font/HyperStiffRoundBootiedOpossumRegular.ttf", 70)
+    font = Font("Font/HyperStiffRoundBootiedOpossumRegular.ttf", 70)
 
     text = font.render("DEFEAT", False, (255, 0, 0))
 
@@ -206,10 +208,10 @@ def show_victory_screen(screen, screen_size):
     :param screen: pygame screen
     :param screen_size: [screen_with, screen_height]
     """
-    surface = pygame.Surface((screen_size[0], screen_size[1]), pygame.SRCALPHA)
-    pygame.draw.rect(surface, (0, 0, 0, 220), (0, 0, screen_size[0], screen_size[1]))
-    font = pygame.font.Font("Font/HyperStiffRoundBootiedOpossumRegular.ttf", 70)
-    text = font.render("VICTORY", 0, (0, 255, 0))
+    surface = Surface((screen_size[0], screen_size[1]), SRCALPHA)
+    rect(surface, (0, 0, 0, 220), (0, 0, screen_size[0], screen_size[1]))
+    font = Font("Font/HyperStiffRoundBootiedOpossumRegular.ttf", 70)
+    text = font.render("VICTORY", False, (0, 255, 0))
     pos = text.get_rect(center=(screen_size[0] / 2, screen_size[1] / 2))
     screen.blit(surface, (0, 0))
     screen.blit(text, pos)
