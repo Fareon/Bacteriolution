@@ -1,20 +1,26 @@
-import play_units as unit
-import game_manager as gm
-import tricky_functions as f
-import sound
-import ui
-import color
+from play_units import Cell, FoodSource
+from game_manager import scene_width, scene_height, borders_width
+from tricky_functions import clamp
+from sound import eat_cell_sound, play_eat_food_sound
+from ui import Radius, Population, Hunger, Speed, generate_text
+from color import random_color, GREEN, BLUE, INIT_PLAYER_COLOR
 from random import randint
 
 cells = []
 self_cells = []
 food_generators = []
 food = []
-grid = [[[] for _ in range(gm.scene_height)] for __ in range(gm.scene_width)]
+grid = [[[] for _ in range(scene_height)] for __ in range(scene_width)]
 
 
 def born_cell(pos, cell_color, cell_type):
-    new_cell = unit.Cell(pos[0], pos[1], cell_color, cell_type)
+    """
+    Create computer cells
+    :param pos: position of a created cell
+    :param cell_color: color of the cell
+    :param cell_type: cell type
+    """
+    new_cell = Cell(pos[0], pos[1], cell_color, cell_type)
     new_cell.change_food_source(food_generators)
     cells.append(new_cell)
     grid[pos[0]][pos[1]].append(new_cell)
@@ -22,8 +28,8 @@ def born_cell(pos, cell_color, cell_type):
 
 def debug_grid():
     total_cells = 0
-    for y in range(gm.scene_height):
-        for x in range(gm.scene_width):
+    for y in range(scene_height):
+        for x in range(scene_width):
             for obj in grid[x][y]:
                 if obj.game_object == 'cell':
                     total_cells += 1
@@ -31,14 +37,24 @@ def debug_grid():
 
 
 def born_self_cell(pos, cell_color, cell_type):
-    new_cell = unit.Cell(pos[0], pos[1], cell_color, cell_type)
+    """
+    Create user cells
+    :param pos: position of a created cell
+    :param cell_color: color of the cell
+    :param cell_type: cell type
+    """
+    new_cell = Cell(pos[0], pos[1], cell_color, cell_type)
     self_cells.append(new_cell)
     grid[pos[0]][pos[1]].append(new_cell)
     update_ui()
 
 
 def born_food_gen(pos):
-    food_gen = unit.FoodSource(pos, self_color=color.GREEN, food_color=color.BLUE)
+    """
+    Create a food generator
+    :param pos: position of a created food generator
+    """
+    food_gen = FoodSource(pos, self_color=GREEN, food_color=BLUE)
     food_generators.append(food_gen)
     grid[pos[0]][pos[1]].append(food_gen)
 
@@ -48,10 +64,10 @@ def check_for_grid(cell):
     radius = cell.r
     content = []
 
-    for x_check in range(f.clamp(x - radius, 1, gm.scene_width - 2), f.clamp(x + radius + 1, 1, gm.scene_width - 2), 1):
+    for x_check in range(clamp(x - radius, 1, scene_width - 2), clamp(x + radius + 1, 1, scene_width - 2), 1):
         for y_check in range(
-                f.clamp(y - radius, 1, gm.scene_width - 2),
-                f.clamp(y + radius + 1, 1, gm.scene_width - 2),
+                clamp(y - radius, 1, scene_width - 2),
+                clamp(y + radius + 1, 1, scene_width - 2),
                 1
         ):
             content += grid[x_check][y_check]
@@ -70,13 +86,19 @@ def check_for_grid(cell):
 
 
 def eat_food(cell, list_of_cells):
+    """
+    Function that stands for eating during the game
+    :param cell: given cell
+    :param list_of_cells: list of cells of the same playing type
+    """
     all_food = check_for_grid(cell)
+
     for food_eaten in all_food['food']:
         grid[food_eaten.x][food_eaten.y].remove(food_eaten)
         food.remove(food_eaten)
         cell.eat(list_of_cells, grid, food_eaten)
         if cell.cell_type == 0 and food_eaten == all_food['food'][-1]:
-            sound.play_eat_food_sound()
+            play_eat_food_sound()
             update_ui()
 
     for food_eaten in all_food['cell']:
@@ -94,36 +116,45 @@ def eat_food(cell, list_of_cells):
 
             cell.eat(list_of_cells, grid, food_eaten)
             if cell.cell_type == 0 and food_eaten == all_food['cell'][-1]:
-                sound.eat_cell_sound.play()
+                eat_cell_sound.play()
                 update_ui()
 
 
 def initialize_game_objects():
+    """
+    Initializing storage for game objects
+    """
     global cells, self_cells, food_generators, food, grid
     cells = []
     self_cells = []
     food_generators = []
     food = []
-    grid = [[[] for _ in range(gm.scene_height)] for __ in range(gm.scene_width)]
+    grid = [[[] for _ in range(scene_height)] for __ in range(scene_width)]
 
 
 def generate_level(food_gens=9, number_of_cells=10, number_of_self_cells=2):
+    """
+    This function generates a map with all the objects
+    :param food_gens: number of food generators
+    :param number_of_cells: number of enemy cells
+    :param number_of_self_cells: number of your own cells
+    """
     initialize_game_objects()
 
-    for i in range(food_gens):
-        x_born = randint(3 * gm.borders_width, gm.scene_width - 3 * gm.borders_width)
-        y_born = randint(3 * gm.borders_width, gm.scene_height - 3 * gm.borders_width)
+    for _ in range(food_gens):
+        x_born = randint(3 * borders_width, scene_width - 3 * borders_width)
+        y_born = randint(3 * borders_width, scene_height - 3 * borders_width)
         born_food_gen((x_born, y_born))
 
-    for i in range(1, 1 + number_of_cells):
-        x_born = randint(3 * gm.borders_width, gm.scene_width - 3 * gm.borders_width)
-        y_born = randint(3 * gm.borders_width, gm.scene_height - 3 * gm.borders_width)
-        born_cell([x_born, y_born], color.random_color(), i)
+    for _ in range(1, 1 + number_of_cells):
+        x_born = randint(3 * borders_width, scene_width - 3 * borders_width)
+        y_born = randint(3 * borders_width, scene_height - 3 * borders_width)
+        born_cell([x_born, y_born], random_color(), _)
 
-    for i in range(number_of_self_cells):
-        x_born = randint(3 * gm.borders_width, gm.scene_width - 3 * gm.borders_width)
-        y_born = randint(3 * gm.borders_width, gm.scene_height - 3 * gm.borders_width)
-        born_self_cell([x_born, y_born], color.INIT_PLAYER_COLOR, 0)
+    for _ in range(number_of_self_cells):
+        x_born = randint(3 * borders_width, scene_width - 3 * borders_width)
+        y_born = randint(3 * borders_width, scene_height - 3 * borders_width)
+        born_self_cell([x_born, y_born], INIT_PLAYER_COLOR, 0)
 
 
 def delete_ghost_cells():
@@ -133,16 +164,19 @@ def delete_ghost_cells():
 
 
 def update_ui():
-    # define maximum Radius among self_cells
+    """
+    Updating user interface
+    """
+    # Define maximum Radius among self_cells
     if len(self_cells) > 0:
         max_r = 0
         for cell in self_cells:
             if cell.r > max_r:
                 max_r = cell.r
 
-        ui.Radius.text = "MAX RADIUS: " + str(max_r)
-        ui.Population.text = "Population: " + str(len(self_cells))
-        ui.Hunger.text = "HUNGER: " + str(self_cells[0].food_level)
-        ui.Speed.text = "SPEED: " + str(round(self_cells[0].velocity, 2))
+        Radius.text = "MAX RADIUS: " + str(max_r)
+        Population.text = "Population: " + str(len(self_cells))
+        Hunger.text = "HUNGER: " + str(self_cells[0].food_level)
+        Speed.text = "SPEED: " + str(round(self_cells[0].velocity, 2))
 
-        ui.generate_text()
+        generate_text()
