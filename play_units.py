@@ -1,6 +1,6 @@
 from random import choices, randint
 from math import cos, sin
-import tricky_functions as f
+from tricky_functions import clamp
 
 
 def close(obj_1, obj_2, distance):
@@ -152,7 +152,6 @@ class Cell:
         :param food: list of all food on the map
         :return: tuple
         """
-        cell_see_food_source_close = close(self, self.heading_food_source, self.vision_distance // 3)
         cell_see_food_source_far = close(self, self.heading_food_source, self.vision_distance + 5)
         heading_position = [self.x, self.y]
         cell_see_prey = False
@@ -375,8 +374,8 @@ class FoodSource:
         x_born = self.x + rad * cos(angle)
         y_born = self.y + rad * sin(angle)
 
-        x_born = f.clamp(x_born, 2, scene_width - 3)
-        y_born = f.clamp(y_born, 2, scene_height - 3)
+        x_born = clamp(x_born, 2, scene_width - 3)
+        y_born = clamp(y_born, 2, scene_height - 3)
 
         new_food = Food((x_born, y_born), self.food_color)
 
