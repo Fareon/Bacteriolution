@@ -16,7 +16,7 @@ def do_zoom(self, direction):
     self.zoom = self.zoom + direction*self.zoom_speed*self.dt
 
 
-clickpos = None
+click_pos = None
 
 zoom = 4
 screen_width = 1280
