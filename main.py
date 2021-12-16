@@ -14,34 +14,40 @@ playing = True
 
 
 def handle_events(events):
+    """
+    This function stands for processing events
+    :param events: events the function has to process
+    """
+    # Calling for all the global names
     global alive
+    global playing
 
     for event in events:
         if event.type == pg.USEREVENT:
+            # Checking if "mutate" button is pressed
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == ui.mutate_button:
-                    print('mutate')
                     new_color = color.random_color()
+
+                    # Actual mutating
                     for cell in gc.self_cells:
                         cell.player_mutate(new_color)
                         ui.change_cell_icon_color(cell.color)
                         ui.cell_icon_button.rebuild_from_changed_theme_data()
 
-                if event.ui_element == ui.info_panel_button:                        
+                if event.ui_element == ui.info_panel_button:
                     gm.ui_click = True
-                    print('Iteracted with ui')
-                
 
     for event in events:
         ui.manager.process_events(event)
 
+        # Checking if we need to escape
         if event.type == pg.QUIT:
             alive = False
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 sound.shut_down_music()
                 alive = False
-                print('Exited game')
             '''if event.key == pg.K_x:
                 print('cells:', len(gc.cells))
                 print('Self_cells:', len(gc.self_cells))
@@ -50,37 +56,49 @@ def handle_events(events):
             keys = pg.key.get_pressed()
 
         if event.type == pg.MOUSEBUTTONDOWN:
-            global playing
+
+            # If the game is not going not, it start after clicking
             if not playing:
                 playing = True
-                gc.generate_level(food_gens=9, cells=10, self_cells=2)
+                gc.generate_level(food_gens=9, cells=5, self_cells=1)
 
             if pg.mouse.get_pos()[0] > gm.ui_panel_width:
                 gm.clickpos = pg.mouse.get_pos()
                 gm.last_clicked_camera_pos = gm.camera_pos
-            # print(gm.ScreenToScene(gm, gm.clickpos))
             if event.button == 4:
                 gm.do_zoom(gm, +1)
             if event.button == 5:
                 gm.do_zoom(gm, -1)
+
     gm.ui_click = False
 
 
 def check_win_condition(screen, screen_size=None):
+    """
+    This function checks if the game is won or lost, and shows screens of defeat and victory
+    :param screen: pygame screen
+    :param screen_size: size of the screen
+    """
+    global playing
+
     if screen_size is None:
         screen_size = [gm.screen_width, gm.screen_height]
-    global playing
-    if (len(gc.self_cells) == 0):
-        print('no player cells left')
+
+    # Losing condition
+    if len(gc.self_cells) == 0:
         scene.show_defeat_screen(screen, screen_size)
         playing = False
-    if (len(gc.cells) == 0):
-        print('no AI cells left')
+
+    # Winning condition
+    if len(gc.cells) == 0:
         scene.show_victory_screen(screen, screen_size)
         playing = False
 
 
 def main():
+    """
+    Initializes main cycle of the game
+    """
     pg.init()
 
     pg.display.set_caption('Bacteriolution')
@@ -88,7 +106,7 @@ def main():
 
     screen = pg.display.set_mode((gm.screen_width, gm.screen_height))
 
-    gc.generate_level(food_gens=9, cells=1, self_cells=2)
+    gc.generate_level(food_gens=9, cells=5, self_cells=1)
 
     while alive:
         handle_events(pg.event.get())
