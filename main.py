@@ -24,7 +24,7 @@ def handle_events(events):
 
     for event in events:
         if event.type == pygame.USEREVENT:
-            # Checking if "mutate" button is pressed
+            # Checking if "Mutate" button is pressed
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == ui.mutate_button:
                     new_color = color.random_color()
@@ -112,8 +112,8 @@ def main():
     while alive:
         handle_events(pygame.event.get())
 
-        if ui.game_speed_scrbar.check_has_moved_recently():
-            gm.Game_FPS = 60 + ui.game_speed_scrbar.scroll_position / 2
+        if ui.game_speed_scroll_bar.check_has_moved_recently():
+            gm.Game_FPS = 60 + ui.game_speed_scroll_bar.scroll_position / 2
 
         # Detecting input
         keys_pressed = pygame.key.get_pressed()

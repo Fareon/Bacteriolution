@@ -46,8 +46,8 @@ class Cell:
         :param cell_type: type of a newly born cell
         :param velocity: cell's velocity
         :param vision_distance: parameter, that defines how far the cell cen see
-        :param split_radius: radius, which is needed to be reached before splitting
-        :param after_split_r: radius of the daughter cells
+        :param split_radius: Radius, which is needed to be reached before splitting
+        :param after_split_r: Radius of the daughter cells
         """
         self.x = x
         self.y = y
@@ -315,7 +315,7 @@ class Cell:
 
     def grow(self):
         """
-        The cell grows in radius
+        The cell grows in Radius
         """
         self.food_level = 1
         self.r += 1

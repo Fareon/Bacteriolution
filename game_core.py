@@ -128,15 +128,15 @@ def delete_ghost_cells():
             cells.remove(cell)
 
 def update_ui():
-    #define maximum radius among self_cells
+    #define maximum Radius among self_cells
     if(len(self_cells) > 0):        
         max_r = 0
         for cell in self_cells:
             if(cell.r > max_r): max_r = cell.r
         
-        ui.radius.text = "MAX RADIUS: " + str(max_r)
-        ui.population.text = "Population: " + str(len(self_cells))
-        ui.hunger.text = "HUNGER: " + str(self_cells[0].food_level)
-        ui.speed.text = "SPEED: " + str(round(self_cells[0].velocity, 2) )
+        ui.Radius.text = "MAX RADIUS: " + str(max_r)
+        ui.Population.text = "Population: " + str(len(self_cells))
+        ui.Hunger.text = "HUNGER: " + str(self_cells[0].food_level)
+        ui.Speed.text = "SPEED: " + str(round(self_cells[0].velocity, 2))
         
         ui.generate_text()

@@ -24,7 +24,7 @@ screen_height = 600
 scene_width = screen_width//zoom
 scene_height = screen_height//zoom
 ui_panel_width = screen_width // 3
-borders_width = 2 #map visual borders
+borders_width = 2  # Map visual borders
 
 ui_click = 0
 click_delay = 10
@@ -36,5 +36,5 @@ dt = 0.01
 
 camera_pos = [scene_width/2, scene_height/2]
 last_clicked_camera_pos = camera_pos
-camera_speed = 50 * 1.5       #vector magnitude
+camera_speed = 50 * 1.5  # Vector magnitude
 zoom_speed = 3
