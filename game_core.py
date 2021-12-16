@@ -157,12 +157,6 @@ def generate_level(food_gens=9, number_of_cells=10, number_of_self_cells=2):
         born_self_cell([x_born, y_born], INIT_PLAYER_COLOR, 0)
 
 
-def delete_ghost_cells():
-    for cell in cells:
-        if not (cell in grid[cell.x][cell.y]):
-            cells.remove(cell)
-
-
 def update_ui():
     """
     Updating user interface
