@@ -1,13 +1,13 @@
 import pygame
-import pygame_gui
+from pygame_gui import UI_BUTTON_PRESSED
 import ui
 import time
-import color
+from color import WHITE, random_color, INIT_PLAYER_COLOR
 import scene
-import sound
+from sound import shut_down_music, play_background_music
 import game_manager as gm
 import game_core as gc
-import tricky_functions as f
+from tricky_functions import chance
 
 alive = True
 playing = True
@@ -25,9 +25,9 @@ def handle_events(events):
     for event in events:
         if event.type == pygame.USEREVENT:
             # Checking if "Mutate" button is pressed
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+            if event.user_type == UI_BUTTON_PRESSED:
                 if event.ui_element == ui.mutate_button:
-                    new_color = color.random_color()
+                    new_color = random_color()
 
                     # Actual mutating
                     for cell in gc.self_cells:
@@ -46,7 +46,7 @@ def handle_events(events):
             alive = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                sound.shut_down_music()
+                shut_down_music()
                 alive = False
             '''if event.key == pg.K_x:
                 print('cells:', len(gc.cells))
@@ -86,13 +86,13 @@ def check_win_condition(screen, screen_size=None):
     # Losing condition
     if len(gc.self_cells) == 0:
         scene.show_defeat_screen(screen, screen_size)
-        ui.change_cell_icon_color(color.INIT_PLAYER_COLOR)
+        ui.change_cell_icon_color(INIT_PLAYER_COLOR)
         playing = False
 
     # Winning condition
     elif len(gc.cells) == 0:
         scene.show_victory_screen(screen, screen_size)
-        ui.change_cell_icon_color(color.INIT_PLAYER_COLOR)
+        ui.change_cell_icon_color(INIT_PLAYER_COLOR)
         playing = False
 
 
@@ -151,12 +151,12 @@ def main():
                 cell.move(cell.think_ahead(gc.cells + gc.self_cells, gc.food_generators, gc.food), gc.grid)
 
             for food_gen in gc.food_generators:
-                if f.chance(food_gen.rate):
+                if chance(food_gen.rate):
                     food_gen.gen_food(gm.scene_width, gm.scene_height, gc.grid, gc.food)
 
         # Graphics
         # Updating background
-        scene.draw_background(screen, color.WHITE)
+        scene.draw_background(screen, WHITE)
 
         # Drawing food
         scene.draw_square_objects(screen, gc.food, gm.camera_pos, [gm.screen_width, gm.screen_height], gm.zoom)
@@ -174,7 +174,7 @@ def main():
             [gm.screen_width, gm.screen_height],
             gm.zoom,
             [gm.scene_width, gm.scene_height],
-            color.random_color(),
+            random_color(),
             gm.borders_width,
             gm.camera_pos
         )
@@ -200,5 +200,5 @@ def main():
 
 # Beginning the game
 if __name__ == "__main__":
-    sound.play_background_music()
+    play_background_music()
     main()
