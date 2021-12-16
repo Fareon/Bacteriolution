@@ -61,8 +61,6 @@ def handle_events(events):
 
                 gc.generate_level(food_gens=9, cells=5, self_cells=1)
 
-                ui.change_cell_icon_color(color.INIT_PLAYER_COLOR)
-
             if pg.mouse.get_pos()[0] > gm.ui_panel_width:
                 gm.clickpos = pg.mouse.get_pos()
                 gm.last_clicked_camera_pos = gm.camera_pos
@@ -88,11 +86,13 @@ def check_win_condition(screen, screen_size=None):
     # Losing condition
     if len(gc.self_cells) == 0:
         scene.show_defeat_screen(screen, screen_size)
+        ui.change_cell_icon_color(color.INIT_PLAYER_COLOR)
         playing = False
 
     # Winning condition
-    if len(gc.cells) == 0:
+    elif len(gc.cells) == 0:
         scene.show_victory_screen(screen, screen_size)
+        ui.change_cell_icon_color(color.INIT_PLAYER_COLOR)
         playing = False
 
 
