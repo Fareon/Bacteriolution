@@ -68,7 +68,7 @@ def eat_food(cell, list_of_cells):
         grid[food_eaten.x][food_eaten.y].remove(food_eaten)
         food.remove(food_eaten)
         cell.eat(list_of_cells, grid, food_eaten)
-        if(cell.color == color.PLAYER_COLOR and food_eaten == all_food['food'][-1]):
+        if cell.cell_type == 0 and food_eaten == all_food['food'][-1]:
             sound.play_eat_food_sound()
             update_ui()
             
@@ -90,7 +90,7 @@ def eat_food(cell, list_of_cells):
                 self_cells.remove(food_eaten)
             
             cell.eat(list_of_cells, grid, food_eaten)
-            if(cell.color == color.PLAYER_COLOR and food_eaten == all_food['cell'][-1]):
+            if cell.cell_type == 0 and food_eaten == all_food['cell'][-1]:
                 sound.eat_cell_sound.play()
                 update_ui()
 
@@ -120,7 +120,7 @@ def generate_level(food_gens = 9, cells = 10, self_cells = 2):
     for i in range(self_cells):
         x_born = randint(3*gm.borders_width, gm.scene_width - 3*gm.borders_width)
         y_born = randint(3*gm.borders_width, gm.scene_height - 3*gm.borders_width)
-        born_self_cell([x_born, y_born], color.PLAYER_COLOR, i)
+        born_self_cell([x_born, y_born], color.INIT_PLAYER_COLOR, i)
 
 def delete_ghost_cells():
     for cell in cells:
