@@ -7,13 +7,22 @@ def screen_to_scene(self, screen_point):
     return scene_point
 
 
-def move_camera(self, direction):
-    self.camera_pos[0] = self.camera_pos[0] + direction[0] * self.camera_speed * self.dt
-    self.camera_pos[1] = self.camera_pos[1] + direction[1] * self.camera_speed * self.dt
+def move_camera(direction):
+    """
+    Function for moving the camera accordingly to a given direction
+    :param direction: given direction
+    """
+    camera_pos[0] = camera_pos[0] + direction[0] * camera_speed * dt
+    camera_pos[1] = camera_pos[1] + direction[1] * camera_speed * dt
 
 
 def do_zoom(self, direction):
-    self.zoom = self.zoom + direction*self.zoom_speed*self.dt
+    """
+    Function for zooming
+    :param self: zoom owner
+    :param direction: zoom direction
+    """
+    self.zoom = self.zoom + direction * self.zoom_speed * self.dt
 
 
 click_pos = None

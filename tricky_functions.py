@@ -1,17 +1,29 @@
-from numpy import random
+from random import random
 
 
-def clamp(x, a, b):
-    if x < a:
-        return a
-    elif x > b:
-        return b
+def clamp(number, minimum: int, maximum: int):
+    """
+    'Cuts' the number between maximum and minimum, and turns it into integer
+    :param number: given number
+    :param minimum: minimum
+    :param maximum: maximum
+    :return: int (cut number)
+    """
+    if number < minimum:
+        return minimum
+    elif number > maximum:
+        return maximum
     else:
-        return int(x)
+        return int(number)
 
 
 def chance(probability):
-    destiny = random.rand()  # from 0 to 1
+    """
+    Function for probabilities
+    :param probability: given probability
+    :return: bool
+    """
+    destiny = random()  # from 0 to 1
     if destiny <= probability:
         return True
     else:

@@ -59,7 +59,7 @@ def handle_events(events):
             if not playing:
                 playing = True
 
-                gc.generate_level(food_gens=9, cells=5, self_cells=1)
+                gc.generate_level(food_gens=9, number_of_cells=5, number_of_self_cells=1)
 
             if pygame.mouse.get_pos()[0] > gm.ui_panel_width:
                 gm.click_pos = pygame.mouse.get_pos()
@@ -107,7 +107,7 @@ def main():
 
     screen = pygame.display.set_mode((gm.screen_width, gm.screen_height))
 
-    gc.generate_level(food_gens=9, cells=5, self_cells=1)
+    gc.generate_level(food_gens=9, number_of_cells=5, number_of_self_cells=1)
 
     while alive:
         handle_events(pygame.event.get())
@@ -120,13 +120,13 @@ def main():
 
         # Giving response (moving camera)
         if keys_pressed[pygame.K_LEFT] or keys_pressed[pygame.K_a]:
-            gm.move_camera(gm, (-1, 0))
+            gm.move_camera((-1, 0))
         if keys_pressed[pygame.K_RIGHT] or keys_pressed[pygame.K_d]:
-            gm.move_camera(gm, (+1, 0))
+            gm.move_camera((+1, 0))
         if keys_pressed[pygame.K_UP] or keys_pressed[pygame.K_w]:
-            gm.move_camera(gm, (0, +1))
+            gm.move_camera((0, +1))
         if keys_pressed[pygame.K_DOWN] or keys_pressed[pygame.K_s]:
-            gm.move_camera(gm, (0, -1))
+            gm.move_camera((0, -1))
 
         # Giving response (zooming)
         if keys_pressed[pygame.K_z]:

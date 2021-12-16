@@ -1,16 +1,16 @@
-import pygame as pg
+from pygame import mixer
 
-pg.init()
-pg.mixer.music.load('sounds/background_music.wav')
-eat_food_sound = pg.mixer.Sound('sounds/eat_food_sound.wav')
-eat_cell_sound = pg.mixer.Sound('sounds/eat_cell_sound.wav')
+mixer.init()
+mixer.music.load('sounds/background_music.wav')
+eat_food_sound = mixer.Sound('sounds/eat_food_sound.wav')
+eat_cell_sound = mixer.Sound('sounds/eat_cell_sound.wav')
 
 
 def play_background_music():
     """
     Plays background music
     """
-    pg.mixer.music.play(-1)
+    mixer.music.play(-1)
 
 
 def play_eat_food_sound():
@@ -31,5 +31,5 @@ def shut_down_music():
     """
     Shuts down all sounds
     """
-    pg.mixer.music.pause()
+    mixer.music.pause()
     eat_food_sound.set_volume(0)
