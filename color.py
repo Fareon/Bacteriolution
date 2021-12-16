@@ -19,4 +19,9 @@ def random_color():
 
 
 def rgb_to_hex(color: tuple):
+    """
+    Turns a color in RGB format into the same one in the HEX format
+    :param color: tuple of len 2, RGB color
+    :return: color in hex format
+    """
     return '#{:02x}{:02x}{:02x}'.format(*color)
