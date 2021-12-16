@@ -1,5 +1,5 @@
 from random import choices, randint
-from numpy import cos, sin
+from math import cos, sin
 import tricky_functions as f
 
 

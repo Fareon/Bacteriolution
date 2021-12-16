@@ -1,4 +1,4 @@
-import pygame as pg
+import pygame
 import pygame_gui
 import ui
 import time
@@ -23,7 +23,7 @@ def handle_events(events):
     global playing
 
     for event in events:
-        if event.type == pg.USEREVENT:
+        if event.type == pygame.USEREVENT:
             # Checking if "mutate" button is pressed
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == ui.mutate_button:
@@ -42,10 +42,10 @@ def handle_events(events):
         ui.manager.process_events(event)
 
         # Checking if we need to escape
-        if event.type == pg.QUIT:
+        if event.type == pygame.QUIT:
             alive = False
-        if event.type == pg.KEYDOWN:
-            if event.key == pg.K_ESCAPE:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
                 sound.shut_down_music()
                 alive = False
             '''if event.key == pg.K_x:
@@ -53,7 +53,7 @@ def handle_events(events):
                 print('Self_cells:', len(gc.self_cells))
                 gc.debug_grid()'''
 
-        if event.type == pg.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN:
 
             # If the game is not going not, it start after clicking
             if not playing:
@@ -61,8 +61,8 @@ def handle_events(events):
 
                 gc.generate_level(food_gens=9, cells=5, self_cells=1)
 
-            if pg.mouse.get_pos()[0] > gm.ui_panel_width:
-                gm.clickpos = pg.mouse.get_pos()
+            if pygame.mouse.get_pos()[0] > gm.ui_panel_width:
+                gm.clickpos = pygame.mouse.get_pos()
                 gm.last_clicked_camera_pos = gm.camera_pos
             if event.button == 4:
                 gm.do_zoom(gm, +1)
@@ -100,38 +100,38 @@ def main():
     """
     Initializes main cycle of the game
     """
-    pg.init()
+    pygame.init()
 
-    pg.display.set_caption('Bacteriolution')
-    pg.font.init()
+    pygame.display.set_caption('Bacteriolution')
+    pygame.font.init()
 
-    screen = pg.display.set_mode((gm.screen_width, gm.screen_height))
+    screen = pygame.display.set_mode((gm.screen_width, gm.screen_height))
 
     gc.generate_level(food_gens=9, cells=5, self_cells=1)
 
     while alive:
-        handle_events(pg.event.get())
+        handle_events(pygame.event.get())
 
         if ui.game_speed_scrbar.check_has_moved_recently():
             gm.Game_FPS = 60 + ui.game_speed_scrbar.scroll_position / 2
 
         # Detecting input
-        keys_pressed = pg.key.get_pressed()
+        keys_pressed = pygame.key.get_pressed()
 
         # Giving response (moving camera)
-        if keys_pressed[pg.K_LEFT] or keys_pressed[pg.K_a]:
+        if keys_pressed[pygame.K_LEFT] or keys_pressed[pygame.K_a]:
             gm.move_camera(gm, (-1, 0))
-        if keys_pressed[pg.K_RIGHT] or keys_pressed[pg.K_d]:
+        if keys_pressed[pygame.K_RIGHT] or keys_pressed[pygame.K_d]:
             gm.move_camera(gm, (+1, 0))
-        if keys_pressed[pg.K_UP] or keys_pressed[pg.K_w]:
+        if keys_pressed[pygame.K_UP] or keys_pressed[pygame.K_w]:
             gm.move_camera(gm, (0, +1))
-        if keys_pressed[pg.K_DOWN] or keys_pressed[pg.K_s]:
+        if keys_pressed[pygame.K_DOWN] or keys_pressed[pygame.K_s]:
             gm.move_camera(gm, (0, -1))
 
         # Giving response (zooming)
-        if keys_pressed[pg.K_z]:
+        if keys_pressed[pygame.K_z]:
             gm.do_zoom(gm, +1)
-        if keys_pressed[pg.K_x]:
+        if keys_pressed[pygame.K_x]:
             gm.do_zoom(gm, -1)
 
         # We must go through all events here additionally, otherwise won't scroll continuously
@@ -143,7 +143,7 @@ def main():
             for cell in gc.self_cells:
                 gc.eat_food(cell, gc.self_cells)
                 if gm.clickpos is not None:
-                    move_to = gm.ScreenToScene(gm, gm.clickpos)
+                    move_to = gm.screen_to_scene(gm, gm.clickpos)
                     cell.move(move_to, gc.grid)
 
             for cell in gc.cells:
@@ -195,7 +195,7 @@ def main():
 
         check_win_condition(screen, screen_size=[gm.screen_width, gm.screen_height])
 
-        pg.display.update()
+        pygame.display.update()
         time.sleep(1.0 / gm.Game_FPS)
         gm.frame += 1
 

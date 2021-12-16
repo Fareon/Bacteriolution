@@ -1,63 +1,88 @@
-import pygame as pg
+import pygame
 
-global SQARE_OUTLINE_COLOR, SQARE_OUTLINE_WIDTH
-SQARE_OUTLINE_COLOR = (57, 57, 57)
-SQARE_OUTLINE_WIDTH = 1
+square_outline_color = (57, 57, 57)
+square_outline_width = 1
 
 
 def draw_background(screen, background_color):
-    '''
-    draw background
-    :param screen:
-    :param background_color:
-    '''
+    """
+    Draws background
+    :param screen: pygame screen
+    :param background_color: color of the back ground
+    """
     screen.fill(background_color)
 
 
-def draw_borders(screen, screen_size, zoom, gamefield_size, borders_color, borders_width, camera_pos):
-    '''
-    function that draw borders
-    :param screen:
+def draw_borders(screen, screen_size, zoom, game_field_size, borders_color, borders_width, camera_pos):
+    """
+    Function that draws borders
+    :param screen: pygame screen
     :param screen_size:  [screen_with, screen_height]
     :param zoom: how much bigger should be our pixel (element of our pixel set), then screen pixel
-    :param gamefield_size: [gamefield_with, gamefield_height]
+    :param game_field_size: [game_field_with, game_field_height]
     :param borders_color:
     :param borders_width: int. with of border in pixels
-    :param camera_pos: coords of camera [x, y]
-    '''
+    :param camera_pos: coordinates of camera [x, y]
+    """
     pixel_size = zoom
-    # coords of up left frame-border corner in new system of coords
+
+    # Coordinates of the top-left frame-border corner in new system of coordinates
     x0 = -camera_pos[0] + screen_size[0] / (2 * zoom) - borders_width
-    y0 = camera_pos[1] + screen_size[1] / (2 * zoom) - borders_width - gamefield_size[1]
+    y0 = camera_pos[1] + screen_size[1] / (2 * zoom) - borders_width - game_field_size[1]
+
     borders_width_in_real_pixels = borders_width * pixel_size
-    if (borders_width_in_real_pixels < 1):
+
+    if borders_width_in_real_pixels < 1:
         borders_width_in_real_pixels = 1
-    # draw up border
-    pg.draw.rect(screen, borders_color,
-                 (x0 * pixel_size, y0 * pixel_size,
-                  (gamefield_size[0] + 2 * borders_width) * pixel_size, borders_width_in_real_pixels))
-    # draw left border
-    pg.draw.rect(screen, borders_color,
-                 ((x0) * pixel_size, y0 * pixel_size,
-                  borders_width_in_real_pixels, (gamefield_size[1] + 2 * borders_width) * pixel_size))
-    # draw down border
-    pg.draw.rect(screen, borders_color,
-                 (x0 * pixel_size, (y0 + gamefield_size[1] + 1 * borders_width) * pixel_size,
-                  (gamefield_size[0] + 2 * borders_width) * pixel_size, borders_width_in_real_pixels))
-    # draw right border
-    pg.draw.rect(screen, borders_color,
-                 ((x0 + gamefield_size[0] + borders_width) * pixel_size, y0 * pixel_size,
-                  borders_width_in_real_pixels, (gamefield_size[1] + 2 * borders_width) * pixel_size))
+    # Drawing top border
+    pygame.draw.rect(
+        screen,
+        borders_color,
+        (x0 * pixel_size,
+         y0 * pixel_size,
+         (game_field_size[0] + 2 * borders_width) * pixel_size,
+         borders_width_in_real_pixels)
+    )
+    # Drawing left border
+    pygame.draw.rect(
+        screen,
+        borders_color,
+        (x0 * pixel_size,
+         y0 * pixel_size,
+         borders_width_in_real_pixels,
+         (game_field_size[1] + 2 * borders_width) * pixel_size
+         )
+    )
+    # Drawing bottom border
+    pygame.draw.rect(
+        screen,
+        borders_color,
+        (x0 * pixel_size,
+         (y0 + game_field_size[1] + 1 * borders_width) * pixel_size,
+         (game_field_size[0] + 2 * borders_width) * pixel_size,
+         borders_width_in_real_pixels
+         )
+    )
+    # Drawing right border
+    pygame.draw.rect(
+        screen,
+        borders_color,
+        ((x0 + game_field_size[0] + borders_width) * pixel_size,
+         y0 * pixel_size,
+         borders_width_in_real_pixels,
+         (game_field_size[1] + 2 * borders_width) * pixel_size
+         )
+    )
 
 
 def choose_objects_for_drawing(objects, camera_pos, screen_size, zoom):
-    '''
-    we check if object from array objects situated on our screen and should be drawn
+    """
+    Checks whether an object from the array objects situated on our screen and should be drawn
     :param objects: list with objects we want to draw
-    :param camera_pos: coords of camera [x, y]
+    :param camera_pos: coordinates of camera [x, y]
     :param screen_size: [screen_with, screen_height]
-    :param zoom: How much bigger should be our pixel (element of our pixel set), then screen pixel
-    '''
+    :param zoom: how much bigger should be our pixel (element of our pixel set), then screen pixel
+    """
     # how many pixels we want to draw [row length, column length]
     pixel_view_amount = [int(screen_size[0] / zoom) + 1, int(screen_size[1] / zoom) + 1]
     scene_objects = []  # list of objects, located in camera area.
@@ -84,11 +109,11 @@ def sqare_objects_display(screen, pixel_size, scene_objects):
         y = obj[1]
         r = obj[2]
         color = obj[3]
-        pg.draw.rect(screen, color,
-                     ((x - r) * pixel_size, (y - r) * pixel_size, 2 * r * pixel_size, 2 * r * pixel_size))
-        pg.draw.rect(screen, SQARE_OUTLINE_COLOR,
-                     ((x - r) * pixel_size, (y - r) * pixel_size, 2 * r * pixel_size, 2 * r * pixel_size),
-                     SQARE_OUTLINE_WIDTH)
+        pygame.draw.rect(screen, color,
+                         ((x - r) * pixel_size, (y - r) * pixel_size, 2 * r * pixel_size, 2 * r * pixel_size))
+        pygame.draw.rect(screen, square_outline_color,
+                         ((x - r) * pixel_size, (y - r) * pixel_size, 2 * r * pixel_size, 2 * r * pixel_size),
+                         square_outline_width)
 
 
 def cross_objects_display(screen, pixel_size, scene_objects):
@@ -103,10 +128,10 @@ def cross_objects_display(screen, pixel_size, scene_objects):
         y = obj[1]
         r = obj[2]
         color = obj[3]
-        pg.draw.rect(screen, color,
-                     ((x - r / 2) * pixel_size, (y - r) * pixel_size, r * pixel_size, 2 * r * pixel_size))
-        pg.draw.rect(screen, color,
-                     ((x - r) * pixel_size, (y - r / 2) * pixel_size, 2 * r * pixel_size, r * pixel_size))
+        pygame.draw.rect(screen, color,
+                         ((x - r / 2) * pixel_size, (y - r) * pixel_size, r * pixel_size, 2 * r * pixel_size))
+        pygame.draw.rect(screen, color,
+                         ((x - r) * pixel_size, (y - r / 2) * pixel_size, 2 * r * pixel_size, r * pixel_size))
 
 
 def draw_sqare_objects(screen, objects, camera_pos, screen_size, zoom):
@@ -145,9 +170,9 @@ def show_defeat_screen(screen, screen_size):
     :param screen:
     :param screen_size: [screen_with, screen_height]
     '''
-    surface = pg.Surface((screen_size[0], screen_size[1]), pg.SRCALPHA)
-    pg.draw.rect(surface, (0, 0, 0, 220), (0, 0, screen_size[0], screen_size[1]))
-    font = pg.font.Font("Font/HyperStiffRoundBootiedOpossumRegular.ttf", 70)
+    surface = pygame.Surface((screen_size[0], screen_size[1]), pygame.SRCALPHA)
+    pygame.draw.rect(surface, (0, 0, 0, 220), (0, 0, screen_size[0], screen_size[1]))
+    font = pygame.font.Font("Font/HyperStiffRoundBootiedOpossumRegular.ttf", 70)
     text = font.render("DEFEAT", 0, (255, 0, 0))
     pos = text.get_rect(center=(screen_size[0] / 2, screen_size[1] / 2))
     screen.blit(surface, (0, 0))
@@ -155,14 +180,14 @@ def show_defeat_screen(screen, screen_size):
 
 
 def show_victory_screen(screen, screen_size):
-    '''
+    """
     function, that show victory screen
     :param screen:
     :param screen_size: [screen_with, screen_height]
-    '''
-    surface = pg.Surface((screen_size[0], screen_size[1]), pg.SRCALPHA)
-    pg.draw.rect(surface, (0, 0, 0, 220), (0, 0, screen_size[0], screen_size[1]))
-    font = pg.font.Font("Font/HyperStiffRoundBootiedOpossumRegular.ttf", 70)
+    """
+    surface = pygame.Surface((screen_size[0], screen_size[1]), pygame.SRCALPHA)
+    pygame.draw.rect(surface, (0, 0, 0, 220), (0, 0, screen_size[0], screen_size[1]))
+    font = pygame.font.Font("Font/HyperStiffRoundBootiedOpossumRegular.ttf", 70)
     text = font.render("VICTORY", 0, (0, 255, 0))
     pos = text.get_rect(center=(screen_size[0] / 2, screen_size[1] / 2))
     screen.blit(surface, (0, 0))

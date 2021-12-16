@@ -1,13 +1,16 @@
-import numpy as np
-
-def ScreenToScene(self, screen_point):
-    camera_shift = np.array([self.last_clicked_camera_pos[0], -self.last_clicked_camera_pos[1]])
-    scene_point = (np.array(list(screen_point)) - np.array([self.screen_width/2, self.screen_height/2]) )/self.zoom + camera_shift
-    scene_point[1] = -scene_point[1]   #axes origin is left-top angle
+def screen_to_scene(self, screen_point):
+    camera_shift = [self.last_clicked_camera_pos[0], -self.last_clicked_camera_pos[1]]
+    screen_point = list(screen_point)
+    scene_point = [(screen_point[0] - self.screen_width / 2) / self.zoom + camera_shift[0],
+                   (screen_point[1] - self.screen_height / 2) / self.zoom + camera_shift[1]]
+    scene_point[1] = -scene_point[1]   # Axes origin is left-top angle
     return scene_point
 
+
 def move_camera(self, direction):
-    self.camera_pos = self.camera_pos + np.array(list(direction) )*self.camera_speed*self.dt
+    self.camera_pos[0] = self.camera_pos[0] + direction[0] * self.camera_speed * self.dt
+    self.camera_pos[1] = self.camera_pos[1] + direction[1] * self.camera_speed * self.dt
+
 
 def do_zoom(self, direction):
     self.zoom = self.zoom + direction*self.zoom_speed*self.dt
@@ -31,7 +34,7 @@ Game_FPS = 60
 frame = 0
 dt = 0.01
 
-camera_pos = np.array([scene_width/2, scene_height/2])
+camera_pos = [scene_width/2, scene_height/2]
 last_clicked_camera_pos = camera_pos
 camera_speed = 50 * 1.5       #vector magnitude
 zoom_speed = 3
