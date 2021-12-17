@@ -26,7 +26,7 @@ class Cell:
     game_object = 'cell'
     init_split_radius = 6
     init_direct_constant = 2
-    mutating_parameters = [init_r, init_velocity, init_vision_distance, init_split_radius, init_direct_constant]
+    mutating_parameters = ['r', 'velocity', 'vision_distance', 'split_radius', 'direct_constant']
 
     def __init__(self,
                  x,
@@ -254,27 +254,27 @@ class Cell:
         This method changes characteristics of a given cell accordingly to built in constants.
         """
         mutating_parameter = choices(self.mutating_parameters, weights=[3, 3, 1, 3, 2])[0]
-        if mutating_parameter == self.mutating_parameters[0]:
+        if mutating_parameter == 'r':
             if self.after_split_r <= 2:
                 self.after_split_r += choices([0, 1], weights=[1, 3])[0]
             else:
                 self.after_split_r += choices([-1, 1], weights=[1, 3])[0]
-        elif mutating_parameter == self.mutating_parameters[1]:
+        elif mutating_parameter == 'velocity':
             if self.velocity <= 1:
                 self.velocity += randint(1, 10) / 10
             else:
                 self.velocity += randint(-10, 10) / 10
-        elif mutating_parameter == self.mutating_parameters[2]:
+        elif mutating_parameter == 'vision_distance':
             if self.vision_distance <= 10:
                 self.vision_distance += choices([0, 2], weights=[1, 2])[0]
             else:
                 self.vision_distance += choices([-2, 2], weights=[1, 2])[0]
-        elif mutating_parameter == self.mutating_parameters[3]:
+        elif mutating_parameter == 'split_radius':
             if self.split_radius <= self.after_split_r:
                 self.split_radius += choices([0, 1], weights=[1, 3])[0]
             else:
                 self.split_radius += choices([-1, 1], weights=[1, 3])[0]
-        elif mutating_parameter == self.mutating_parameters[4]:
+        elif mutating_parameter == 'direct_constant':
             if self.direct_constant <= 1:
                 self.direct_constant += randint(0, 1)
             else:
@@ -286,27 +286,27 @@ class Cell:
         :param new_color: new color of cells
         """
         mutating_parameter = choices(self.mutating_parameters, weights=[2, 3, 1, 2, 2])[0]
-        if mutating_parameter == self.mutating_parameters[0]:
+        if mutating_parameter == 'r':
             if self.after_split_r <= 2:
                 self.after_split_r += choices([0, 1], weights=[1, 3])[0]
             else:
                 self.after_split_r += choices([-1, 1], weights=[1, 3])[0]
-        elif mutating_parameter == self.mutating_parameters[1]:
+        elif mutating_parameter == 'velocity':
             if self.velocity <= 1:
                 self.velocity += randint(1, 10) / 10
             else:
                 self.velocity += randint(-10, 10) / 10
-        elif mutating_parameter == self.mutating_parameters[2]:
+        elif mutating_parameter == 'vision_distance':
             if self.vision_distance <= 10:
                 self.vision_distance += choices([0, 2], weights=[1, 2])[0]
             else:
                 self.vision_distance += choices([-2, 2], weights=[1, 2])[0]
-        elif mutating_parameter == self.mutating_parameters[3]:
+        elif mutating_parameter == 'split_radius':
             if self.split_radius <= self.after_split_r:
                 self.split_radius += choices([0, 1], weights=[1, 3])[0]
             else:
                 self.split_radius += choices([-1, 1], weights=[1, 3])[0]
-        elif mutating_parameter == self.mutating_parameters[4]:
+        elif mutating_parameter == 'direct_constant':
             if self.direct_constant <= 1:
                 self.direct_constant += randint(0, 1)
             else:

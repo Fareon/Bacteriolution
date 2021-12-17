@@ -168,9 +168,16 @@ def update_ui():
             if cell.r > max_r:
                 max_r = cell.r
 
+    # Define maximum velocity among self_cells
+    if len(self_cells) > 0:
+        max_vel = 0
+        for cell in self_cells:
+            if cell.velocity > max_vel:
+                max_vel = cell.velocity
+
         Radius.text = "MAX RADIUS: " + str(max_r)
         Population.text = "Population: " + str(len(self_cells))
-        Hunger.text = "HUNGER: " + str(self_cells[0].food_level)
-        Speed.text = "SPEED: " + str(round(self_cells[0].velocity, 2))
+        Hunger.text = "SELFISHNESS: " + str(self_cells[0].direct_constant)
+        Speed.text = "MAX SPEED: " + str(round(self_cells[0].velocity, 2))
 
         generate_text()

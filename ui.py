@@ -62,7 +62,7 @@ class ScrollBar:
 
 
 class Radius:
-    x, y = (GameSpeedText.x - 120, GameSpeedText.y + 95)
+    x, y = (GameSpeedText.x - 130, GameSpeedText.y + 95)
     x2, y2 = (GameSpeedText.x + GameSpeedText.w + 50, GameSpeedText.y + GameSpeedText.h)
     text = 'MAX RADIUS: 2'
     color = UI
@@ -86,15 +86,15 @@ class Population:
 
 
 class Speed:
-    x, y = (ui_panel_width * 0.6, Radius.y)
-    text = 'SPEED: 0'
+    x, y = (ui_panel_width * 0.49, Radius.y)
+    text = 'MAX SPEED: 0'
     color = UI
     text_surf = None
 
 
 class Hunger:
     x, y = (Speed.x, Population.y)
-    text = 'HUNGER: 0'
+    text = 'SELFISHNESS: 0'
     color = UI
     text_surf = None 
 
